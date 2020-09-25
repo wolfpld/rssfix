@@ -9,6 +9,7 @@ IMAGE := $(PROJECT)-$(BUILD)
 SD := ../src
 
 SRC := \
+	$(SD)/OpenSslThreading.cpp \
 	$(SD)/RssFix.cpp
 
 OBJDIRBASE := obj/$(BUILD)
