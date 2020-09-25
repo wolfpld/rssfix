@@ -6,7 +6,10 @@ LIBS += $(shell pkg-config --libs libcurl) -lpthread
 PROJECT := rssfix
 IMAGE := $(PROJECT)-$(BUILD)
 
-SRC :=
+SD := ../src
+
+SRC := \
+	$(SD)/RssFix.cpp
 
 OBJDIRBASE := obj/$(BUILD)
 OBJDIR := $(OBJDIRBASE)/o
