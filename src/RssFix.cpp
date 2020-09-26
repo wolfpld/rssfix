@@ -2,17 +2,18 @@
 #include <pthread.h>
 #include <stdio.h>
 
+#include "Color.hpp"
 #include "OpenSslThreading.hpp"
 #include "Version.hpp"
 
 int main( int argc, char** argv )
 {
-    printf( "RssFix %i.%i.%i\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH );
+    printf( BOLDYELLOW "RssFix %i.%i.%i" RESET "\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH );
 
     OpenSslThreadInit();
     if( curl_global_init( CURL_GLOBAL_ALL ) != 0 )
     {
-        fprintf( stderr, "Unable to initialize libcurl!\n" );
+        fprintf( stderr, BOLDRED "Unable to initialize libcurl!" RESET "\n" );
         return -1;
     }
 
