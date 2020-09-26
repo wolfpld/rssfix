@@ -1,3 +1,5 @@
+# vim: noexpandtab
+
 CFLAGS +=
 CXXFLAGS := $(CFLAGS) -std=gnu++17
 DEFINES +=
