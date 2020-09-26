@@ -53,6 +53,17 @@ int main( int argc, char** argv )
         return -1;
     }
 
+    int enableApod = 0;
+    ini_sget( config, "feeds", "apod", "%d", &enableApod );
+
+    if( !enableApod )
+    {
+        fprintf( stderr, BOLDRED "No feeds enabled in configuration!" RESET "\n" );
+        ini_free( config );
+        curl_global_cleanup();
+        OpenSslThreadCleanup();
+        return -4;
+    }
 
     ini_free( config );
     curl_global_cleanup();
