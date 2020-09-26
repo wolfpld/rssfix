@@ -12,7 +12,7 @@
 
 static MUTEX_TYPE* mutex_buf = NULL;
 
-static void locking_function(int mode, int n, const char * file, int line)
+[[maybe_unused]] static void locking_function(int mode, int n, const char * file, int line)
 {
     if(mode & CRYPTO_LOCK)
         MUTEX_LOCK(mutex_buf[n]);
@@ -20,7 +20,7 @@ static void locking_function(int mode, int n, const char * file, int line)
         MUTEX_UNLOCK(mutex_buf[n]);
 }
 
-static unsigned long id_function(void)
+[[maybe_unused]] static unsigned long id_function(void)
 {
     return ((unsigned long)THREAD_ID);
 }
