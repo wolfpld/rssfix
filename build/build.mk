@@ -45,8 +45,8 @@ $(OBJDIR)/%.d : %.c
 	sed 's,.*\.o[ :]*,$(OBJDIR)/$(<:.c=.o) $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
-$(IMAGE): $(OBJ) $(OBJ2) $(OBJ3)
-	$(CXX) $(CXXFLAGS) $(DEFINES) $(OBJ) $(OBJ2) $(OBJ3) $(LIBS) -o $@
+$(IMAGE): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(DEFINES) $(OBJ) $(LIBS) -o $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
 DEPS_1 := $(addprefix $(OBJDIR)/,$(SRC:.cpp=.d))
