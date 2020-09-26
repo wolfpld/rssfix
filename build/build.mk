@@ -17,12 +17,16 @@ SRC := \
 OBJDIRBASE := obj/$(BUILD)
 OBJDIR := $(OBJDIRBASE)/o
 
-OBJ := $(addprefix $(OBJDIR)/,$(SRC:%.cpp=%.o))
+OBJ_1 := $(addprefix $(OBJDIR)/,$(SRC:%.cpp=%.o))
+OBJ := $(OBJ_1:%.c=%.o)
 
 all: $(IMAGE)
 
 $(OBJDIR)/%.o: %.cpp
 	$(CXX) -c $(INCLUDES) $(CXXFLAGS) $(DEFINES) $< -o $@
+
+$(OBJDIR)/%.o: %.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(DEFINES) $< -o $@
 
 $(OBJDIR)/%.d : %.cpp
 	@echo Resolving dependencies of $<
@@ -31,11 +35,20 @@ $(OBJDIR)/%.d : %.cpp
 	sed 's,.*\.o[ :]*,$(OBJDIR)/$(<:.cpp=.o) $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
+$(OBJDIR)/%.d : %.c
+	@echo Resolving dependencies of $<
+	@mkdir -p $(@D)
+	@$(CC) -MM $(INCLUDES) $(CFLAGS) $(DEFINES) $< > $@.$$$$; \
+	sed 's,.*\.o[ :]*,$(OBJDIR)/$(<:.c=.o) $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
 $(IMAGE): $(OBJ) $(OBJ2) $(OBJ3)
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(OBJ) $(OBJ2) $(OBJ3) $(LIBS) -o $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
--include $(addprefix $(OBJDIR)/,$(SRC:.cpp=.d))
+DEPS_1 := $(addprefix $(OBJDIR)/,$(SRC:.cpp=.d))
+DEPS := $(DEPS_1:.c=.d)
+-include $(DEPS)
 endif
 
 clean:
