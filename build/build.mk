@@ -9,10 +9,13 @@ PROJECT := rssfix
 IMAGE := $(PROJECT)-$(BUILD)
 
 SD := ../src
+CD := ../contrib
 
 SRC := \
 	$(SD)/OpenSslThreading.cpp \
-	$(SD)/RssFix.cpp
+	$(SD)/RssFix.cpp \
+	$(CD)/ini/ini.c
+
 
 OBJDIRBASE := obj/$(BUILD)
 OBJDIR := $(OBJDIRBASE)/o
