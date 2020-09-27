@@ -1,11 +1,9 @@
-#include <curl/curl.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include "Color.hpp"
+#include "Curl.hpp"
 #include "Engine.hpp"
-#include "OpenSslThreading.hpp"
 #include "Version.hpp"
 
 #include "../contrib/ini/ini.h"
@@ -46,12 +44,11 @@ int main( int argc, char** argv )
         return -3;
     }
 
-    OpenSslThreadInit();
-    if( curl_global_init( CURL_GLOBAL_ALL ) != 0 )
+    auto curl = Curl::Initialize();
+    if( !curl )
     {
         fprintf( stderr, BOLDRED "Unable to initialize libcurl!" RESET "\n" );
         ini_free( config );
-        OpenSslThreadCleanup();
         return -1;
     }
 
@@ -60,13 +57,9 @@ int main( int argc, char** argv )
     {
         fprintf( stderr, BOLDRED "RssFix initialization failed!" RESET "\n" );
         ini_free( config );
-        curl_global_cleanup();
-        OpenSslThreadCleanup();
         return -4;
     }
 
     ini_free( config );
-    curl_global_cleanup();
-    OpenSslThreadCleanup();
     return 0;
 }

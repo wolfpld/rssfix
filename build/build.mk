@@ -13,6 +13,7 @@ CD := ../contrib
 
 SRC := \
 	$(SD)/Apod.cpp \
+	$(SD)/Curl.cpp \
 	$(SD)/Engine.cpp \
 	$(SD)/Handler.cpp \
 	$(SD)/OpenSslThreading.cpp \
