@@ -15,7 +15,7 @@ public:
 
 private:
     template<class T>
-    bool AddHandler( ini_t* config );
+    bool AddHandler( ini_t* config, const char* name );
 
     std::vector<std::unique_ptr<Handler>> m_handlers;
 };
