@@ -24,7 +24,7 @@ bool Handler::Initialize( ini_t* config )
     return InitializeImpl( config );
 }
 
-void Handler::PrintStatus( bool status, const char* format, ... ) const
+void Handler::PrintStatus( bool status, const char* unit, const char* format, ... ) const
 {
     char tmp[4096];
     va_list args;
@@ -33,5 +33,5 @@ void Handler::PrintStatus( bool status, const char* format, ... ) const
     va_end( args );
 
     std::lock_guard lock( m_stdoutLock );
-    printf( BOLDWHITE "  [%s" BOLDWHITE "]" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", tmp );
+    printf( BOLDWHITE "  [%s" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", unit, tmp );
 }

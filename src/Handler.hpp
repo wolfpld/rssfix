@@ -18,7 +18,7 @@ public:
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
 
-    void PrintStatus( bool status, const char* format, ... ) const;
+    void PrintStatus( bool status, const char* unit, const char* format, ... ) const;
 
     CURL* m_curl;
 
