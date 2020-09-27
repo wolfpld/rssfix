@@ -4,8 +4,24 @@
 #include "Color.hpp"
 #include "Handler.hpp"
 
+Handler::Handler()
+    : m_curl( curl_easy_init() )
+{
+}
+
 Handler::~Handler()
 {
+    curl_easy_cleanup( m_curl );
+}
+
+bool Handler::Initialize( ini_t* config )
+{
+    if( !m_curl )
+    {
+        fprintf( stderr, BOLDRED "Failed to obtain CURL handle!" RESET "\n" );
+        return false;
+    }
+    return InitializeImpl( config );
 }
 
 void Handler::PrintStatus( bool status, const char* format, ... ) const

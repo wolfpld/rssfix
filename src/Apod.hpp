@@ -8,10 +8,11 @@ class Apod : public Handler
 public:
     Apod();
 
-    bool Initialize( ini_t* config ) final;
     bool FirstFetch() final;
 
 private:
+    bool InitializeImpl( ini_t* config ) final;
+
     int m_numArticles;
 };
 

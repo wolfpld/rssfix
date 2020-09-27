@@ -10,7 +10,7 @@ Apod::Apod()
 {
 }
 
-bool Apod::Initialize( ini_t* config )
+bool Apod::InitializeImpl( ini_t* config )
 {
     ini_sget( config, "global", "articles", "%d", &m_numArticles );
     ini_sget( config, "apod", "articles", "%d", &m_numArticles );
