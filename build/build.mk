@@ -12,7 +12,9 @@ SD := ../src
 CD := ../contrib
 
 SRC := \
+	$(SD)/Apod.cpp \
 	$(SD)/Engine.cpp \
+	$(SD)/Handler.cpp \
 	$(SD)/OpenSslThreading.cpp \
 	$(SD)/RssFix.cpp \
 	$(CD)/ini/ini.c
