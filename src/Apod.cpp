@@ -2,6 +2,7 @@
 
 #include "Apod.hpp"
 #include "Color.hpp"
+#include "Curl.hpp"
 
 #include "../contrib/ini/ini.h"
 
@@ -22,5 +23,6 @@ bool Apod::InitializeImpl( ini_t* config )
 
 bool Apod::FirstFetch()
 {
+    auto page = Curl::Get( m_curl, "https://apod.nasa.gov/apod/astropix.html" );
     return true;
 }
