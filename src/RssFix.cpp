@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "Color.hpp"
+#include "Engine.hpp"
 #include "OpenSslThreading.hpp"
 #include "Version.hpp"
 
@@ -50,15 +51,14 @@ int main( int argc, char** argv )
     {
         fprintf( stderr, BOLDRED "Unable to initialize libcurl!" RESET "\n" );
         ini_free( config );
+        OpenSslThreadCleanup();
         return -1;
     }
 
-    int enableApod = 0;
-    ini_sget( config, "feeds", "apod", "%d", &enableApod );
-
-    if( !enableApod )
+    Engine engine;
+    if( !engine.Initialize( config ) )
     {
-        fprintf( stderr, BOLDRED "No feeds enabled in configuration!" RESET "\n" );
+        fprintf( stderr, BOLDRED "RssFix initialization failed!" RESET "\n" );
         ini_free( config );
         curl_global_cleanup();
         OpenSslThreadCleanup();
