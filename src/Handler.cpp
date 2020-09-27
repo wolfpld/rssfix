@@ -15,5 +15,7 @@ void Handler::PrintStatus( bool status, const char* format, ... ) const
     va_start( args, format );
     vsnprintf( tmp, 4096, format, args );
     va_end( args );
+
+    std::lock_guard lock( m_stdoutLock );
     printf( BOLDWHITE "  [%s" BOLDWHITE "]" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", tmp );
 }

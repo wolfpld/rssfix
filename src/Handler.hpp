@@ -1,6 +1,8 @@
 #ifndef __HANDLER_HPP__
 #define __HANDLER_HPP__
 
+#include <mutex>
+
 struct ini_t;
 
 class Handler
@@ -13,6 +15,9 @@ public:
 
 protected:
     void PrintStatus( bool status, const char* format, ... ) const;
+
+private:
+    mutable std::mutex m_stdoutLock;
 };
 
 #endif
