@@ -4,6 +4,10 @@
 #include "Color.hpp"
 #include "Handler.hpp"
 
+Handler::~Handler()
+{
+}
+
 void Handler::PrintStatus( bool status, const char* format, ... ) const
 {
     char tmp[4096];

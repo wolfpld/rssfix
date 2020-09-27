@@ -6,6 +6,8 @@ struct ini_t;
 class Handler
 {
 public:
+    virtual ~Handler();
+
     virtual bool Initialize( ini_t* config ) = 0;
     virtual bool FirstFetch() = 0;
 
