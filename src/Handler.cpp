@@ -4,8 +4,9 @@
 #include "Color.hpp"
 #include "Handler.hpp"
 
-Handler::Handler()
+Handler::Handler( const char* unit )
     : m_curl( curl_easy_init() )
+    , m_unit( unit )
 {
 }
 
@@ -24,7 +25,7 @@ bool Handler::Initialize( ini_t* config )
     return InitializeImpl( config );
 }
 
-void Handler::PrintStatus( bool status, const char* unit, const char* format, ... ) const
+void Handler::PrintStatus( bool status, const char* format, ... ) const
 {
     char tmp[4096];
     va_list args;
@@ -33,10 +34,10 @@ void Handler::PrintStatus( bool status, const char* unit, const char* format, ..
     va_end( args );
 
     std::lock_guard lock( m_stdoutLock );
-    printf( BOLDWHITE "  [%s" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", unit, tmp );
+    printf( BOLDWHITE "  [%s" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", m_unit, tmp );
 }
 
-void Handler::PrintError( const char* unit, const char* context, const char* err, ... ) const
+void Handler::PrintError( const char* context, const char* err, ... ) const
 {
     char tmp[4096];
     va_list args;
@@ -45,6 +46,6 @@ void Handler::PrintError( const char* unit, const char* context, const char* err
     va_end( args );
 
     std::lock_guard lock( m_stdoutLock );
-    printf( BOLDWHITE "  [" BOLDYELLOW "!" BOLDWHITE "] " BOLDMAGENTA "%s" BOLDRED " Error: " RESET "%s\n", unit, tmp );
+    printf( BOLDWHITE "  [" BOLDYELLOW "!" BOLDWHITE "] " BOLDMAGENTA "%s" BOLDRED " Error: " RESET "%s\n", m_unit, tmp );
     if( context ) printf( "%s", context );
 }

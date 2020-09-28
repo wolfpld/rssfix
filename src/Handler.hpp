@@ -9,7 +9,7 @@ struct ini_t;
 class Handler
 {
 public:
-    Handler();
+    Handler( const char* unit );
     virtual ~Handler();
 
     bool Initialize( ini_t* config );
@@ -18,13 +18,14 @@ public:
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
 
-    void PrintStatus( bool status, const char* unit, const char* format, ... ) const;
-    void PrintError( const char* unit, const char* context, const char* err, ... ) const;
+    void PrintStatus( bool status, const char* format, ... ) const;
+    void PrintError( const char* context, const char* err, ... ) const;
 
     CURL* m_curl;
 
 private:
     mutable std::mutex m_stdoutLock;
+    const char* m_unit;
 };
 
 #endif

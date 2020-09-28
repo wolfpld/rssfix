@@ -8,7 +8,8 @@
 #include "../contrib/ini/ini.h"
 
 Apod::Apod()
-    : m_numArticles( 10 )
+    : Handler( "APOD" )
+    , m_numArticles( 10 )
 {
 }
 
@@ -18,7 +19,7 @@ bool Apod::InitializeImpl( ini_t* config )
     ini_sget( config, "apod", "articles", "%d", &m_numArticles );
 
     const bool status = m_numArticles > 0;
-    PrintStatus( status, "APOD", "Initialization: configured for %i articles", m_numArticles );
+    PrintStatus( status, "Initialization: configured for %i articles", m_numArticles );
     return status;
 }
 
@@ -28,12 +29,12 @@ bool Apod::FirstFetch()
     auto page = Curl::Get( m_curl, url );
     if( page.empty() )
     {
-        PrintError( "APOD", nullptr, "Cannot download %s", url );
+        PrintError( nullptr, "Cannot download %s", url );
         return false;
     }
     page.emplace_back( '\0' );
     const char* xhtml;
     auto res = ParseHtml( (const char*)page.data(), xhtml );
-    if( !res ) PrintError( "APOD", xhtml, "Cannot parse %s", url );
+    if( !res ) PrintError( xhtml, "Cannot parse %s", url );
     return res;
 }
