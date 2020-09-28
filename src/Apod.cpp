@@ -3,6 +3,7 @@
 #include "Apod.hpp"
 #include "Color.hpp"
 #include "Curl.hpp"
+#include "Parser.hpp"
 
 #include "../contrib/ini/ini.h"
 
@@ -23,6 +24,16 @@ bool Apod::InitializeImpl( ini_t* config )
 
 bool Apod::FirstFetch()
 {
-    auto page = Curl::Get( m_curl, "https://apod.nasa.gov/apod/astropix.html" );
-    return true;
+    const char* url = "https://apod.nasa.gov/apod/astropix.html";
+    auto page = Curl::Get( m_curl, url );
+    if( page.empty() )
+    {
+        PrintError( "APOD", nullptr, "Cannot download %s", url );
+        return false;
+    }
+    page.emplace_back( '\0' );
+    const char* xhtml;
+    auto res = ParseHtml( (const char*)page.data(), xhtml );
+    if( !res ) PrintError( "APOD", xhtml, "Cannot parse %s", url );
+    return res;
 }
