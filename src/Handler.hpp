@@ -23,6 +23,8 @@ protected:
 
     CURL* m_curl;
 
+    bool ParseHtml( const char* data, const char*& out );
+
 private:
     mutable std::mutex m_stdoutLock;
     const char* m_unit;

@@ -17,7 +17,6 @@ SRC := \
 	$(SD)/Engine.cpp \
 	$(SD)/Handler.cpp \
 	$(SD)/OpenSslThreading.cpp \
-	$(SD)/Parser.cpp \
 	$(SD)/RssFix.cpp \
 	$(CD)/ini/ini.c
 

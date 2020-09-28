@@ -4,7 +4,6 @@
 #include "Apod.hpp"
 #include "Color.hpp"
 #include "Curl.hpp"
-#include "Parser.hpp"
 
 #include "../contrib/ini/ini.h"
 
