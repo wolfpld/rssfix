@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "Color.hpp"
 #include "Handler.hpp"
@@ -47,5 +48,16 @@ void Handler::PrintError( const char* context, const char* err, ... ) const
 
     std::lock_guard lock( m_stdoutLock );
     printf( BOLDWHITE "  [" BOLDYELLOW "!" BOLDWHITE "] " BOLDMAGENTA "%s" BOLDRED " Error: " RESET "%s\n", m_unit, tmp );
-    if( context ) printf( "%s", context );
+    if( context && *context )
+    {
+        const auto sz = strlen( context );
+        if( context[sz-1] == '\n' )
+        {
+            printf( "%s", context );
+        }
+        else
+        {
+            printf( "%s\n", context );
+        }
+    }
 }
