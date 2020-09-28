@@ -19,6 +19,7 @@ protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
 
     void PrintStatus( bool status, const char* unit, const char* format, ... ) const;
+    void PrintError( const char* unit, const char* context, const char* err, ... ) const;
 
     CURL* m_curl;
 

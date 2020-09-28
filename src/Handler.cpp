@@ -35,3 +35,16 @@ void Handler::PrintStatus( bool status, const char* unit, const char* format, ..
     std::lock_guard lock( m_stdoutLock );
     printf( BOLDWHITE "  [%s" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", unit, tmp );
 }
+
+void Handler::PrintError( const char* unit, const char* context, const char* err, ... ) const
+{
+    char tmp[4096];
+    va_list args;
+    va_start( args, err );
+    vsnprintf( tmp, 4096, err, args );
+    va_end( args );
+
+    std::lock_guard lock( m_stdoutLock );
+    printf( BOLDWHITE "  [" BOLDYELLOW "!" BOLDWHITE "] " BOLDMAGENTA "%s" BOLDRED " Error: " RESET "%s\n", unit, tmp );
+    if( context ) printf( "%s", context );
+}
