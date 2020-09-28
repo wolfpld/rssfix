@@ -3,8 +3,8 @@
 CFLAGS +=
 CXXFLAGS := $(CFLAGS) -std=gnu++17
 DEFINES +=
-INCLUDES := $(shell pkg-config --cflags libcurl)
-LIBS += $(shell pkg-config --libs libcurl) -lpthread
+INCLUDES := $(shell pkg-config --cflags libcurl tidy)
+LIBS += $(shell pkg-config --libs libcurl tidy) -lpthread
 PROJECT := rssfix
 IMAGE := $(PROJECT)-$(BUILD)
 
@@ -17,6 +17,7 @@ SRC := \
 	$(SD)/Engine.cpp \
 	$(SD)/Handler.cpp \
 	$(SD)/OpenSslThreading.cpp \
+	$(SD)/Parser.cpp \
 	$(SD)/RssFix.cpp \
 	$(CD)/ini/ini.c
 
