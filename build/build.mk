@@ -3,8 +3,8 @@
 CFLAGS +=
 CXXFLAGS := $(CFLAGS) -std=gnu++17
 DEFINES +=
-INCLUDES := $(shell pkg-config --cflags libcurl tidy)
-LIBS += $(shell pkg-config --libs libcurl tidy) -lpthread
+INCLUDES := $(shell pkg-config --cflags libcurl tidy pugixml)
+LIBS += $(shell pkg-config --libs libcurl tidy pugixml) -lpthread
 PROJECT := rssfix
 IMAGE := $(PROJECT)-$(BUILD)
 

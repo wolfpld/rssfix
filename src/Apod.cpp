@@ -1,3 +1,4 @@
+#include <pugixml.hpp>
 #include <stdio.h>
 
 #include "Apod.hpp"
@@ -35,6 +36,19 @@ bool Apod::FirstFetch()
     page.emplace_back( '\0' );
     const char* xhtml;
     auto res = ParseHtml( (const char*)page.data(), xhtml );
-    if( !res ) PrintError( xhtml, "Cannot parse %s", url );
-    return res;
+    if( !res )
+    {
+        PrintError( xhtml, "Cannot parse %s", url );
+        return false;
+    }
+
+    pugi::xml_document doc;
+    auto xmlres = doc.load_string( xhtml );
+    if( !xmlres )
+    {
+        PrintError( xmlres.description(), "Cannot build XML tree" );
+        return false;
+    }
+
+    return true;
 }
