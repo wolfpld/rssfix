@@ -1,9 +1,6 @@
-#include <pugixml.hpp>
 #include <stdio.h>
 
 #include "Apod.hpp"
-#include "Color.hpp"
-#include "Curl.hpp"
 
 #include "../contrib/ini/ini.h"
 
@@ -26,28 +23,6 @@ bool Apod::InitializeImpl( ini_t* config )
 bool Apod::FirstFetch()
 {
     const char* url = "https://apod.nasa.gov/apod/astropix.html";
-    auto page = Curl::Get( m_curl, url );
-    if( page.empty() )
-    {
-        PrintError( nullptr, "Cannot download %s", url );
-        return false;
-    }
-    page.emplace_back( '\0' );
-    const char* xhtml;
-    auto res = ParseHtml( (const char*)page.data(), xhtml );
-    if( !res )
-    {
-        PrintError( xhtml, "Cannot parse %s", url );
-        return false;
-    }
-
-    pugi::xml_document doc;
-    auto xmlres = doc.load_string( xhtml );
-    if( !xmlres )
-    {
-        PrintError( xmlres.description(), "Cannot build XML tree" );
-        return false;
-    }
-
-    return true;
+    auto dom = FetchDom( url );
+    return (bool)dom;
 }

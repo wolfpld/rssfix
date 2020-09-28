@@ -5,6 +5,7 @@
 #include <tidybuffio.h>
 
 #include "Color.hpp"
+#include "Curl.hpp"
 #include "Handler.hpp"
 
 Handler::Handler( const char* unit )
@@ -62,6 +63,34 @@ void Handler::PrintError( const char* context, const char* err, ... ) const
             printf( "%s\n", context );
         }
     }
+}
+
+std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url )
+{
+    auto page = Curl::Get( m_curl, url );
+    if( page.empty() )
+    {
+        PrintError( nullptr, "Cannot download %s", url );
+        return nullptr;
+    }
+    page.emplace_back( '\0' );
+
+    const char* xhtml;
+    auto res = ParseHtml( (const char*)page.data(), xhtml );
+    if( !res )
+    {
+        PrintError( xhtml, "Cannot parse %s", url );
+        return nullptr;
+    }
+
+    auto doc = std::make_unique<pugi::xml_document>();
+    auto xmlres = doc->load_string( xhtml );
+    if( !xmlres )
+    {
+        PrintError( xmlres.description(), "Cannot build XML tree" );
+        return nullptr;
+    }
+    return doc;
 }
 
 bool Handler::ParseHtml( const char* data, const char*& out )

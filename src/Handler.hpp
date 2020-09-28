@@ -2,7 +2,9 @@
 #define __HANDLER_HPP__
 
 #include <curl/curl.h>
+#include <memory>
 #include <mutex>
+#include <pugixml.hpp>
 
 struct ini_t;
 
@@ -18,14 +20,16 @@ public:
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
 
+    std::unique_ptr<pugi::xml_document> FetchDom( const char* url );
+
     void PrintStatus( bool status, const char* format, ... ) const;
     void PrintError( const char* context, const char* err, ... ) const;
 
-    CURL* m_curl;
-
+private:
     bool ParseHtml( const char* data, const char*& out );
 
-private:
+    CURL* m_curl;
+
     mutable std::mutex m_stdoutLock;
     const char* m_unit;
 };
