@@ -12,6 +12,7 @@ struct ini_t;
 
 struct ArticleData
 {
+    uint64_t timestamp;
     std::unique_ptr<pugi::xml_document> doc;
 };
 
