@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <tidy.h>
 #include <tidybuffio.h>
@@ -75,16 +76,18 @@ std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url )
     }
     page.emplace_back( '\0' );
 
-    const char* xhtml;
+    char* xhtml;
     auto res = ParseHtml( (const char*)page.data(), xhtml );
     if( !res )
     {
         PrintError( xhtml, "Cannot parse %s", url );
+        free( xhtml );
         return nullptr;
     }
 
     auto doc = std::make_unique<pugi::xml_document>();
     auto xmlres = doc->load_string( xhtml );
+    free( xhtml );
     if( !xmlres )
     {
         PrintError( xmlres.description(), "Cannot build XML tree" );
@@ -93,7 +96,7 @@ std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url )
     return doc;
 }
 
-bool Handler::ParseHtml( const char* data, const char*& out )
+bool Handler::ParseHtml( const char* data, char*& out )
 {
     TidyBuffer err = {};
     tidyBufInit( &err );

@@ -26,7 +26,7 @@ protected:
     void PrintError( const char* context, const char* err, ... ) const;
 
 private:
-    bool ParseHtml( const char* data, const char*& out );
+    bool ParseHtml( const char* data, char*& out );
 
     CURL* m_curl;
 
