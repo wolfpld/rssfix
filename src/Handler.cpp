@@ -66,7 +66,7 @@ void Handler::PrintError( const char* context, const char* err, ... ) const
     }
 }
 
-std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url )
+std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url, bool tidy )
 {
     auto page = Curl::Get( m_curl, url );
     if( page.empty() )
@@ -76,17 +76,20 @@ std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url )
     }
     page.emplace_back( '\0' );
 
-    char* xhtml;
-    auto res = ParseHtml( (const char*)page.data(), xhtml );
-    if( !res )
+    char* xhtml = nullptr;
+    if( tidy )
     {
-        PrintError( xhtml, "Cannot parse %s", url );
-        free( xhtml );
-        return nullptr;
+        auto res = ParseHtml( (const char*)page.data(), xhtml );
+        if( !res )
+        {
+            PrintError( xhtml, "Cannot parse %s", url );
+            free( xhtml );
+            return nullptr;
+        }
     }
 
     auto doc = std::make_unique<pugi::xml_document>();
-    auto xmlres = doc->load_string( xhtml );
+    auto xmlres = doc->load_string( tidy ? xhtml : (const char*)page.data() );
     free( xhtml );
     if( !xmlres )
     {
