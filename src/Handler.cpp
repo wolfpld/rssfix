@@ -40,7 +40,7 @@ bool Handler::FirstFetch()
     const auto status = FirstFetchImpl();
     if( status )
     {
-        PrintStatus( true, "Fetch: %s", GetTitle().c_str() );
+        PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
     }
     else
     {
