@@ -117,5 +117,5 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
         tptr = tend;
     }
 
-    AddArticle( ArticleData { timestamp, std::move( doc ) } );
+    AddArticle( ArticleData { timestamp, std::move( doc ), std::string( url ) } );
 }
