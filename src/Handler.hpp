@@ -6,8 +6,14 @@
 #include <mutex>
 #include <pugixml.hpp>
 #include <string>
+#include <vector>
 
 struct ini_t;
+
+struct ArticleData
+{
+    std::unique_ptr<pugi::xml_document> doc;
+};
 
 class Handler
 {
@@ -33,6 +39,7 @@ protected:
 
     int m_numArticles;
     std::string m_title, m_description;
+    std::vector<ArticleData> m_articles;
 
 private:
     bool ParseHtml( const char* data, char*& out );
