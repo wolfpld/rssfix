@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <sstream>
 #include <stdarg.h>
 #include <stdio.h>
@@ -157,4 +158,10 @@ void Handler::PrintDom( const std::unique_ptr<pugi::xml_document>& dom )
     dom->save( ss, "  " );
     printf( "%s\n", ss.str().c_str() );
     printf( CYAN "----------->8----- Debug DOM print ends here -------------------" RESET "\n" );
+}
+
+void Handler::AddArticle( ArticleData&& article )
+{
+    if( m_articles.size() == m_numArticles ) m_articles.pop_back();
+    m_articles.emplace( m_articles.begin(), std::move( article ) );
 }

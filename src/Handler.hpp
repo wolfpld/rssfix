@@ -37,6 +37,8 @@ protected:
     void PrintStatus( bool status, const char* format, ... ) const;
     void PrintError( const char* context, const char* err, ... ) const;
 
+    void AddArticle( ArticleData&& article );
+
     int m_numArticles;
     std::string m_title, m_description;
     std::vector<ArticleData> m_articles;
