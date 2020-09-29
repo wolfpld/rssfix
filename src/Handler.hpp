@@ -40,6 +40,7 @@ protected:
     void PrintError( const char* context, const char* err, ... ) const;
 
     void AddArticle( ArticleData&& article );
+    bool ContainsArticle( const std::string& uid ) const;
 
     int m_numArticles;
     std::string m_title, m_description;

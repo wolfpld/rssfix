@@ -160,6 +160,12 @@ void Handler::PrintDom( const std::unique_ptr<pugi::xml_document>& dom )
     printf( CYAN "----------->8----- Debug DOM print ends here -------------------" RESET "\n" );
 }
 
+bool Handler::ContainsArticle( const std::string& uid ) const
+{
+    for( auto& v : m_articles ) if( v.uid == uid ) return true;
+    return false;
+}
+
 void Handler::AddArticle( ArticleData&& article )
 {
     if( m_articles.size() == m_numArticles ) m_articles.pop_back();
