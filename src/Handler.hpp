@@ -18,6 +18,9 @@ public:
     bool Initialize( ini_t* config );
     virtual bool FirstFetch() = 0;
 
+    const std::string& GetTitle() const { return m_title; }
+    const std::string& GetDescription() const { return m_description; }
+
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
 
