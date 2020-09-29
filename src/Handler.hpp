@@ -31,6 +31,7 @@ protected:
     void PrintStatus( bool status, const char* format, ... ) const;
     void PrintError( const char* context, const char* err, ... ) const;
 
+    int m_numArticles;
     std::string m_title, m_description;
 
 private:

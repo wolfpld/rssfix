@@ -11,8 +11,6 @@ public:
 private:
     bool InitializeImpl( ini_t* config ) final;
     bool FirstFetchImpl() final;
-
-    int m_numArticles;
 };
 
 #endif

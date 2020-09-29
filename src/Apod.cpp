@@ -6,13 +6,11 @@
 
 Apod::Apod()
     : Handler( "APOD" )
-    , m_numArticles( 10 )
 {
 }
 
 bool Apod::InitializeImpl( ini_t* config )
 {
-    ini_sget( config, "global", "articles", "%d", &m_numArticles );
     ini_sget( config, "apod", "articles", "%d", &m_numArticles );
 
     const bool status = m_numArticles > 0;

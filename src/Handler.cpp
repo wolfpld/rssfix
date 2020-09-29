@@ -6,12 +6,15 @@
 #include <tidy.h>
 #include <tidybuffio.h>
 
+#include "../contrib/ini/ini.h"
+
 #include "Color.hpp"
 #include "Curl.hpp"
 #include "Handler.hpp"
 
 Handler::Handler( const char* unit )
-    : m_curl( curl_easy_init() )
+    : m_numArticles( 10 )
+    , m_curl( curl_easy_init() )
     , m_unit( unit )
 {
 }
@@ -28,6 +31,7 @@ bool Handler::Initialize( ini_t* config )
         fprintf( stderr, BOLDRED "Failed to obtain CURL handle!" RESET "\n" );
         return false;
     }
+    ini_sget( config, "global", "articles", "%d", &m_numArticles );
     return InitializeImpl( config );
 }
 
