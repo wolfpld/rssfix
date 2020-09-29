@@ -66,8 +66,6 @@ bool Apod::FirstFetchImpl()
         article = FetchDom( url.c_str() );
         if( !article ) return true;
     }
-
-    return true;
 }
 
 void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, const char* url, uint64_t timestamp )
