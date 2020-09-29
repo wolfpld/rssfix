@@ -1,3 +1,4 @@
+#include <sstream>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -128,4 +129,13 @@ bool Handler::ParseHtml( const char* data, char*& out )
     tidyBufFree( &err );
     tidyRelease( td );
     return true;
+}
+
+void Handler::PrintDom( const std::unique_ptr<pugi::xml_document>& dom )
+{
+    printf( CYAN "------------------ Debug DOM print begins here ----------->8----" RESET "\n" );
+    std::stringstream ss;
+    dom->save( ss, "  " );
+    printf( "%s\n", ss.str().c_str() );
+    printf( CYAN "----------->8----- Debug DOM print ends here -------------------" RESET "\n" );
 }

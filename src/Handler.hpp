@@ -21,6 +21,7 @@ protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
 
     std::unique_ptr<pugi::xml_document> FetchDom( const char* url, bool tidy = true );
+    void PrintDom( const std::unique_ptr<pugi::xml_document>& dom );
 
     void PrintStatus( bool status, const char* format, ... ) const;
     void PrintError( const char* context, const char* err, ... ) const;
