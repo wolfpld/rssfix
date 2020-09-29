@@ -20,7 +20,7 @@ bool Apod::InitializeImpl( ini_t* config )
     return status;
 }
 
-bool Apod::FirstFetch()
+bool Apod::FirstFetchImpl()
 {
     const char* url = "https://apod.nasa.gov/apod/astropix.html";
     auto dom = FetchDom( url );

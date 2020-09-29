@@ -16,13 +16,14 @@ public:
     virtual ~Handler();
 
     bool Initialize( ini_t* config );
-    virtual bool FirstFetch() = 0;
+    bool FirstFetch();
 
     const std::string& GetTitle() const { return m_title; }
     const std::string& GetDescription() const { return m_description; }
 
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
+    virtual bool FirstFetchImpl() = 0;
 
     std::unique_ptr<pugi::xml_document> FetchDom( const char* url, bool tidy = true );
     void PrintDom( const std::unique_ptr<pugi::xml_document>& dom );

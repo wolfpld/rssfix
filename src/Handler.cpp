@@ -31,6 +31,20 @@ bool Handler::Initialize( ini_t* config )
     return InitializeImpl( config );
 }
 
+bool Handler::FirstFetch()
+{
+    const auto status = FirstFetchImpl();
+    if( status )
+    {
+        PrintStatus( true, "Fetch: %s", GetTitle().c_str() );
+    }
+    else
+    {
+        PrintStatus( false, "Fetch failed" );
+    }
+    return status;
+}
+
 void Handler::PrintStatus( bool status, const char* format, ... ) const
 {
     char tmp[4096];
