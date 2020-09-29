@@ -106,7 +106,6 @@ bool Handler::ParseHtml( const char* data, char*& out )
 
     TidyDoc td = tidyCreate();
     tidyOptSetBool( td, TidyXhtmlOut, yes );
-    tidyOptSetBool( td, TidyBodyOnly, yes );
     tidyOptSetBool( td, TidyLowerLiterals, yes );
     tidySetErrorBuffer( td, &err );
 
