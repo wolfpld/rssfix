@@ -168,6 +168,7 @@ bool Handler::ContainsArticle( const std::string& uid ) const
 
 void Handler::AddArticle( ArticleData&& article )
 {
+    assert( !ContainsArticle( article.uid ) );
     if( m_articles.size() == m_numArticles ) m_articles.pop_back();
     m_articles.emplace( m_articles.begin(), std::move( article ) );
 }

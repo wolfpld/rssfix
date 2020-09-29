@@ -53,7 +53,10 @@ bool Apod::FirstFetchImpl()
         tm.tm_mday = d;
         uint64_t timestamp = timegm( &tm );
 
-        ProcessArticle( article, url.c_str(), timestamp );
+        if( !ContainsArticle( url ) )
+        {
+            ProcessArticle( article, url.c_str(), timestamp );
+        }
 
         auto next = article->select_node( "//a[text()='<']" );
         if( !next ) return !m_articles.empty();
