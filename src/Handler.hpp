@@ -5,6 +5,7 @@
 #include <memory>
 #include <mutex>
 #include <pugixml.hpp>
+#include <string>
 
 struct ini_t;
 
@@ -25,6 +26,8 @@ protected:
 
     void PrintStatus( bool status, const char* format, ... ) const;
     void PrintError( const char* context, const char* err, ... ) const;
+
+    std::string m_title, m_description;
 
 private:
     bool ParseHtml( const char* data, char*& out );

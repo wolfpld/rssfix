@@ -24,5 +24,13 @@ bool Apod::FirstFetch()
 {
     const char* url = "https://apod.nasa.gov/apod/astropix.html";
     auto dom = FetchDom( url );
-    return (bool)dom;
+    if( !dom ) return false;
+
+    auto title = dom->select_node( "/html/head/title" );
+    m_title = title ? title.node().text().as_string() : "APOD";
+
+    auto desc = dom->select_node( "/html/head/meta[@name=\"description\"]" );
+    m_description = desc ? desc.node().attribute( "content" ).as_string() : "";
+
+    return true;
 }
