@@ -49,6 +49,7 @@ bool Apod::FirstFetchImpl()
         int y, m, d;
         sscanf( url.c_str() + 29, "%02d%02d%02d", &y, &m, &d );
         if( y < 70 ) y += 100;
+        m--;
 
         struct tm tm = {};
         tm.tm_year = y;
