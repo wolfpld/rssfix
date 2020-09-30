@@ -95,6 +95,41 @@ void Handler::PrintError( const char* context, const char* err, ... ) const
     }
 }
 
+
+const char* Handler::FormatTime( int time ) const
+{
+    static char buf[64];
+    if( time < 61 )
+    {
+        snprintf( buf, 64, "%i s", time );
+    }
+    else if( time < 60*60 )
+    {
+        int minutes = time / 60;
+        time -= time * 60;
+        snprintf( buf, 64, "%02i:%02i", minutes, time );
+    }
+    else if( time < 24*60*60 )
+    {
+        int hours = time / (60*60);
+        time -= hours * (60*60);
+        int minutes = time / 60;
+        time -= minutes * 60;
+        snprintf( buf, 64, "%02i:%02i:%02i", hours, minutes, time );
+    }
+    else
+    {
+        int days = time / (24*60*60);
+        time -= days * (24*60*60);
+        int hours = time / (60*60);
+        time -= hours * (60*60);
+        int minutes = time / 60;
+        time -= minutes * 60;
+        snprintf( buf, 64, "%id %02i:%02i:%02i", days, hours, minutes, time );
+    }
+    return buf;
+}
+
 std::vector<uint8_t> Handler::FetchPage( const char* url )
 {
     auto page = Curl::Get( m_curl, url );

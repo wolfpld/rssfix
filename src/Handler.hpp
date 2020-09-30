@@ -46,6 +46,8 @@ protected:
     void PrintStatus( bool status, const char* format, ... ) const;
     void PrintError( const char* context, const char* err, ... ) const;
 
+    const char* FormatTime( int time ) const;
+
     void AddArticle( ArticleData&& article );
     bool ContainsArticle( const std::string& uid ) const;
 
