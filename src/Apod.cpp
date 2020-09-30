@@ -64,7 +64,7 @@ bool Apod::FirstFetchImpl()
 
         auto next = article->select_node( "//a[text()='<']" );
         if( !next ) return !m_articles.empty();
-        if( ++num == 3 ) return true;
+        if( ++num == m_numArticles ) return true;
 
         url = std::string( "https://apod.nasa.gov/apod/" ) + next.node().attribute( "href" ).as_string();
         article = FetchDom( FetchPage( url.c_str() ) );
