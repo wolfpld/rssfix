@@ -91,7 +91,15 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
     {
         auto node = root.append_child( "author" );
         node.append_child( "name" ).append_child( pugi::node_pcdata ).set_value( author.node().text().as_string() );
-        node.append_child( "uri" ).append_child( pugi::node_pcdata ).set_value( author.node().attribute( "href" ).as_string() );
+        auto contact = author.node().attribute( "href" ).as_string();
+        if( strncmp( contact, "mailto:", 7 ) == 0 )
+        {
+            node.append_child( "email" ).append_child( pugi::node_pcdata ).set_value( contact );
+        }
+        else
+        {
+            node.append_child( "uri" ).append_child( pugi::node_pcdata ).set_value( contact );
+        }
     }
 
     auto content = root.append_child( "content" );
