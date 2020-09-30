@@ -9,6 +9,13 @@
 
 bool Engine::Initialize( ini_t* config )
 {
+    auto url = ini_get( config, "global", "url" );
+    if( !url )
+    {
+        fprintf( stderr, BOLDRED "Feed URL must be set!" RESET "\n" );
+        return false;
+    }
+
     if( !AddHandler<Apod>( config, "apod" ) ) return false;
 
     if( m_handlers.empty() )
