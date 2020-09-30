@@ -230,3 +230,12 @@ void Handler::CacheFeed()
     feed->save( ss );
     m_feedString = ss.str();
 }
+
+void Handler::FixupLink( pugi::xml_attribute attr, const char* baseUrl )
+{
+    auto str = attr.as_string();
+    if( strncmp( str, "http://", 7 ) == 0 ) return;
+    if( strncmp( str, "https://", 8 ) == 0 ) return;
+    auto fixed = std::string( baseUrl ) + str;
+    attr.set_value( fixed.c_str() );
+}

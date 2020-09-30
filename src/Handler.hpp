@@ -49,6 +49,8 @@ protected:
     void AddArticle( ArticleData&& article );
     bool ContainsArticle( const std::string& uid ) const;
 
+    void FixupLink( pugi::xml_attribute attr, const char* baseUrl );
+
     std::string m_icon;
 
     int m_numArticles;
