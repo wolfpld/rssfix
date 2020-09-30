@@ -7,6 +7,7 @@
 
 Apod::Apod()
     : Handler( "APOD", "https://apod.nasa.gov/apod/astropix.html" )
+    , m_baseUrl( "https://apod.nasa.gov/apod/" )
 {
     m_icon = "https://apod.nasa.gov/favicon.ico";
 }
@@ -36,11 +37,11 @@ bool Apod::FirstFetchImpl()
     std::string url;
     {
         auto next = article->select_node( "//a[text()='<']" );
-        url = std::string( "https://apod.nasa.gov/apod/" ) + next.node().attribute( "href" ).as_string();
+        url = m_baseUrl + next.node().attribute( "href" ).as_string();
         auto tmp = FetchDom( FetchPage( url.c_str() ) );
         if( !tmp ) return false;
         auto prev = tmp->select_node( "//a[text()='>']" );
-        url = std::string( "https://apod.nasa.gov/apod/" ) + prev.node().attribute( "href" ).as_string();
+        url = m_baseUrl + prev.node().attribute( "href" ).as_string();
     }
 
     int num = 0;
@@ -66,7 +67,7 @@ bool Apod::FirstFetchImpl()
         if( !next ) return !m_articles.empty();
         if( ++num == m_numArticles ) return true;
 
-        url = std::string( "https://apod.nasa.gov/apod/" ) + next.node().attribute( "href" ).as_string();
+        url = m_baseUrl + next.node().attribute( "href" ).as_string();
         article = FetchDom( FetchPage( url.c_str() ) );
         if( !article ) return true;
     }
@@ -110,8 +111,8 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
     if( srcImg )
     {
         cdiv.append_copy( srcImg.node() );
-        FixupLink( cdiv.child( "a" ).attribute( "href" ), "https://apod.nasa.gov/apod/" );
-        FixupLink( cdiv.child( "a" ).child( "img" ).attribute( "src" ), "https://apod.nasa.gov/apod/" );
+        FixupLink( cdiv.child( "a" ).attribute( "href" ), m_baseUrl.c_str() );
+        FixupLink( cdiv.child( "a" ).child( "img" ).attribute( "src" ), m_baseUrl.c_str() );
     }
     else
     {
@@ -122,7 +123,7 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
     auto expl = article->select_node( "/html/body/p[1]" );
     for( auto& v : expl.node().select_nodes( "a/@href" ) )
     {
-        FixupLink( v.attribute(), "https://apod.nasa.gov/apod/" );
+        FixupLink( v.attribute(), m_baseUrl.c_str() );
     }
     cdiv.append_copy( expl.node() );
 

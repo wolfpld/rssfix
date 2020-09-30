@@ -16,6 +16,8 @@ private:
     bool FirstFetchImpl() final;
 
     void ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, const char* url, uint64_t timestamp );
+
+    const std::string m_baseUrl;
 };
 
 #endif
