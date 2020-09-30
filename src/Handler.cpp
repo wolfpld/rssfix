@@ -16,6 +16,7 @@
 
 Handler::Handler( const char* unit, const char* sourceUrl )
     : m_numArticles( 10 )
+    , m_refresh( 3600 )
     , m_curl( curl_easy_init() )
     , m_pageHash( {} )
     , m_unit( unit )
@@ -40,6 +41,7 @@ bool Handler::Initialize( ini_t* config )
     m_feedUrl = std::string( ini_get( config, "server", "url" ) ) + m_feedUrlShort;
 
     ini_sget( config, "global", "articles", "%d", &m_numArticles );
+    ini_sget( config, "global", "refresh", "%d", &m_refresh );
     return InitializeImpl( config );
 }
 

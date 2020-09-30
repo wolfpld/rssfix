@@ -15,9 +15,10 @@ Apod::Apod()
 bool Apod::InitializeImpl( ini_t* config )
 {
     ini_sget( config, "apod", "articles", "%d", &m_numArticles );
+    ini_sget( config, "apod", "refresh", "%d", &m_refresh );
 
     const bool status = m_numArticles > 0;
-    PrintStatus( status, "Initialization: configured for %i articles", m_numArticles );
+    PrintStatus( status, "Initialization: configured for %i articles, refresh: %s", m_numArticles, FormatTime( m_refresh ) );
     return status;
 }
 

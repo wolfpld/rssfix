@@ -56,6 +56,8 @@ protected:
     std::string m_icon;
 
     int m_numArticles;
+    int m_refresh;
+
     std::string m_title, m_description;
     std::vector<ArticleData> m_articles;
 
