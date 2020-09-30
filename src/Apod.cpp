@@ -101,6 +101,8 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
     if( srcImg )
     {
         cdiv.append_copy( srcImg.node() );
+        FixupLink( cdiv.child( "a" ).attribute( "href" ), "https://apod.nasa.gov/apod/" );
+        FixupLink( cdiv.child( "a" ).child( "img" ).attribute( "src" ), "https://apod.nasa.gov/apod/" );
     }
     else
     {
