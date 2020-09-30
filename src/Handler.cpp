@@ -206,8 +206,8 @@ void Handler::CacheFeed()
     char tbuf[64];
     strftime( tbuf, 64, "%FT%TZ", gmtime( (time_t*)&m_articles[0].timestamp ) );
 
-    m_feed = std::make_unique<pugi::xml_document>();
-    auto root = m_feed->append_child( "feed" );
+    auto feed = std::make_unique<pugi::xml_document>();
+    auto root = feed->append_child( "feed" );
     root.append_attribute( "xmlns" ).set_value( "http://www.w3.org/2005/Atom" );
 
     root.append_child( "title" ).append_child( pugi::node_pcdata ).set_value( m_title.c_str() );
@@ -227,6 +227,6 @@ void Handler::CacheFeed()
     }
 
     std::stringstream ss;
-    m_feed->save( ss );
+    feed->save( ss );
     m_feedString = ss.str();
 }

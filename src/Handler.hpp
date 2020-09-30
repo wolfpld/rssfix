@@ -67,7 +67,6 @@ private:
     const char* m_unit;
 
     std::string m_feedUrl, m_feedUrlShort, m_sourceUrl;
-    std::unique_ptr<pugi::xml_document> m_feed;
     std::string m_feedString;
 };
 
