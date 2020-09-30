@@ -7,13 +7,18 @@
 #include "Handler.hpp"
 
 struct ini_t;
+struct mg_connection;
 
 class Engine
 {
 public:
     Engine();
+    ~Engine();
 
     bool Initialize( ini_t* config );
+    void RunServer();
+
+    const std::vector<std::unique_ptr<Handler>>& GetHandlers() const { return m_handlers; }
 
 private:
     template<class T>

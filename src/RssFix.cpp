@@ -60,6 +60,8 @@ int main( int argc, char** argv )
         return -4;
     }
 
+    engine.RunServer();
+
     ini_free( config );
     return 0;
 }
