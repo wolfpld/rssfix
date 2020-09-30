@@ -8,6 +8,7 @@
 Apod::Apod()
     : Handler( "APOD" )
 {
+    m_icon = "https://apod.nasa.gov/favicon.ico";
 }
 
 bool Apod::InitializeImpl( ini_t* config )

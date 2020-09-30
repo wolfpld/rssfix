@@ -42,6 +42,8 @@ protected:
     void AddArticle( ArticleData&& article );
     bool ContainsArticle( const std::string& uid ) const;
 
+    std::string m_icon;
+
     int m_numArticles;
     std::string m_title, m_description;
     std::vector<ArticleData> m_articles;
