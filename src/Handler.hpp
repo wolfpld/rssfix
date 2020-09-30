@@ -50,6 +50,7 @@ protected:
 
 private:
     bool ParseHtml( const char* data, char*& out );
+    void SortArticles();
 
     CURL* m_curl;
 

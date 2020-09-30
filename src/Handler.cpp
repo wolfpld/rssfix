@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <assert.h>
 #include <sstream>
 #include <stdarg.h>
@@ -45,6 +46,7 @@ bool Handler::FirstFetch()
     const auto status = FirstFetchImpl();
     if( status )
     {
+        SortArticles();
         PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
     }
     else
@@ -175,4 +177,9 @@ void Handler::AddArticle( ArticleData&& article )
     assert( !ContainsArticle( article.uid ) );
     if( m_articles.size() == m_numArticles ) m_articles.pop_back();
     m_articles.emplace( m_articles.begin(), std::move( article ) );
+}
+
+void Handler::SortArticles()
+{
+    std::sort( m_articles.begin(), m_articles.end(), []( const auto& l, const auto& r ) { return l.timestamp > r.timestamp; } );
 }
