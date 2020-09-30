@@ -75,6 +75,7 @@ bool Engine::Initialize( ini_t* config )
         }
     }
     printf( "Fetch done\n" );
+    printf( "Base address: %s\n", url );
 
     return true;
 }
