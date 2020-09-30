@@ -18,7 +18,8 @@ SRC := \
 	$(SD)/Handler.cpp \
 	$(SD)/OpenSslThreading.cpp \
 	$(SD)/RssFix.cpp \
-	$(CD)/ini/ini.c
+	$(CD)/ini/ini.c \
+	$(CD)/mongoose/mongoose.c
 
 
 OBJDIRBASE := obj/$(BUILD)
