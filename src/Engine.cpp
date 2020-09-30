@@ -101,7 +101,7 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
         mg_sock_to_str( nc->sock, remoteAddr, sizeof(remoteAddr), MG_SOCK_STRINGIFY_REMOTE | MG_SOCK_STRINGIFY_IP | MG_SOCK_STRINGIFY_PORT );
         std::string uri( hm->uri.p, hm->uri.len );
         auto ua = mg_get_http_header( hm, "User-Agent" );
-        int code, size = 0;
+        int code = 0, size = 0;
         if( uri == "/" )
         {
             std::ostringstream resp;
@@ -123,8 +123,23 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
         }
         else
         {
-            code = 404;
-            mg_http_send_error( nc, 404, nullptr );
+            for( auto& v : s_instance->GetHandlers() )
+            {
+                if( uri == v->GetFeedUrlShort() )
+                {
+                    auto& feed = v->GetFeed();
+                    code = 200;
+                    size = feed.size();
+                    mg_send_head( nc, 200, size, "Content-Type: text/xml" );
+                    mg_printf( nc, "%.*s", size, feed.c_str() );
+                    break;
+                }
+            }
+            if( code == 0 )
+            {
+                code = 404;
+                mg_http_send_error( nc, 404, nullptr );
+            }
         }
         printf( CYAN "%s " GREEN "\"%.*s %.*s\" " YELLOW "%i " MAGENTA "%i " RED "\"%.*s\"" RESET "\n", remoteAddr, (int)hm->method.len, hm->method.p, (int)hm->uri.len, hm->uri.p, code, size, ua ? (int)ua->len : 0, ua ? ua->p : "" );
     }

@@ -32,6 +32,8 @@ public:
     const std::string& GetFeedUrl() const { return m_feedUrl; }
     const std::string& GetFeedUrlShort() const { return m_feedUrlShort; }
 
+    const std::string& GetFeed() const { return m_feedString; }
+
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
     virtual bool FirstFetchImpl() = 0;
