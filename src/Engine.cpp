@@ -37,15 +37,15 @@ static void TrySet( const char*& value, ini_t* config, const char* section, cons
 
 bool Engine::Initialize( ini_t* config )
 {
-    auto url = ini_get( config, "global", "url" );
+    auto url = ini_get( config, "server", "url" );
     if( !url )
     {
         fprintf( stderr, BOLDRED "Feed URL must be set!" RESET "\n" );
         return false;
     }
 
-    TrySet( m_bind, config, "global", "bind" );
-    TrySet( m_port, config, "global", "port" );
+    TrySet( m_bind, config, "server", "bind" );
+    TrySet( m_port, config, "server", "port" );
 
     if( !AddHandler<Apod>( config, "apod" ) ) return false;
 

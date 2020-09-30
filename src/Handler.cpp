@@ -37,7 +37,7 @@ bool Handler::Initialize( ini_t* config )
     }
 
     m_feedUrlShort = "/apod";
-    m_feedUrl = std::string( ini_get( config, "global", "url" ) ) + m_feedUrlShort;
+    m_feedUrl = std::string( ini_get( config, "server", "url" ) ) + m_feedUrlShort;
 
     ini_sget( config, "global", "articles", "%d", &m_numArticles );
     return InitializeImpl( config );
