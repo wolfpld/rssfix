@@ -2,10 +2,23 @@
 #include <thread>
 
 #include "../contrib/ini/ini.h"
+#include "../contrib/mongoose/mongoose.h"
 
 #include "Apod.hpp"
 #include "Color.hpp"
 #include "Engine.hpp"
+
+Engine::Engine()
+    : m_bind( "127.0.0.1" )
+    , m_port( "4001" )
+{
+}
+
+static void TrySet( const char*& value, ini_t* config, const char* section, const char* key )
+{
+    auto tmp = ini_get( config, section, key );
+    if( tmp ) value = tmp;
+}
 
 bool Engine::Initialize( ini_t* config )
 {
@@ -15,6 +28,9 @@ bool Engine::Initialize( ini_t* config )
         fprintf( stderr, BOLDRED "Feed URL must be set!" RESET "\n" );
         return false;
     }
+
+    TrySet( m_bind, config, "global", "bind" );
+    TrySet( m_port, config, "global", "port" );
 
     if( !AddHandler<Apod>( config, "apod" ) ) return false;
 
