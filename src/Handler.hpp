@@ -30,6 +30,7 @@ public:
     const std::string& GetTitle() const { return m_title; }
     const std::string& GetDescription() const { return m_description; }
     const std::string& GetFeedUrl() const { return m_feedUrl; }
+    const std::string& GetFeedUrlShort() const { return m_feedUrlShort; }
 
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
@@ -63,7 +64,7 @@ private:
     mutable std::mutex m_stdoutLock;
     const char* m_unit;
 
-    std::string m_feedUrl, m_sourceUrl;
+    std::string m_feedUrl, m_feedUrlShort, m_sourceUrl;
     std::unique_ptr<pugi::xml_document> m_feed;
     std::string m_feedString;
 };
