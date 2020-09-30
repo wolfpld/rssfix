@@ -47,6 +47,7 @@ bool Handler::FirstFetch()
     if( status )
     {
         SortArticles();
+        CacheFeed();
         PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
     }
     else
@@ -182,4 +183,32 @@ void Handler::AddArticle( ArticleData&& article )
 void Handler::SortArticles()
 {
     std::sort( m_articles.begin(), m_articles.end(), []( const auto& l, const auto& r ) { return l.timestamp > r.timestamp; } );
+}
+
+void Handler::CacheFeed()
+{
+    char tbuf[64];
+    strftime( tbuf, 64, "%FT%TZ", gmtime( (time_t*)&m_articles[0].timestamp ) );
+
+    m_feed = std::make_unique<pugi::xml_document>();
+    auto root = m_feed->append_child( "feed" );
+    root.append_attribute( "xmlns" ).set_value( "http://www.w3.org/2005/Atom" );
+
+    root.append_child( "title" ).append_child( pugi::node_pcdata ).set_value( m_title.c_str() );
+    root.append_child( "subtitle" ).append_child( pugi::node_pcdata ).set_value( m_description.c_str() );
+    root.append_child( "id" ).append_child( pugi::node_pcdata ).set_value( m_feedUrl.c_str() );
+    root.append_child( "updated" ).append_child( pugi::node_pcdata ).set_value( tbuf );
+
+    auto self = root.append_child( "link" );
+    self.append_attribute( "type" ).set_value( "self" );
+    self.append_attribute( "href" ).set_value( m_feedUrl.c_str() );
+    root.append_child( "link" ).append_attribute( "href" ).set_value( m_sourceUrl.c_str() );
+    if( !m_icon.empty() ) root.append_child( "icon" ).append_child( pugi::node_pcdata ).set_value( m_icon.c_str() );
+
+    for( auto& v : m_articles )
+    {
+        root.append_copy( v.doc->first_child() );
+    }
+
+    PrintDom( m_feed );
 }

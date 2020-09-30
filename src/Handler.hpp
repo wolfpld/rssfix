@@ -51,6 +51,7 @@ protected:
 private:
     bool ParseHtml( const char* data, char*& out );
     void SortArticles();
+    void CacheFeed();
 
     CURL* m_curl;
 
@@ -58,6 +59,7 @@ private:
     const char* m_unit;
 
     std::string m_feedUrl, m_sourceUrl;
+    std::unique_ptr<pugi::xml_document> m_feed;
 };
 
 #endif
