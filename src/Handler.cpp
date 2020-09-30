@@ -225,5 +225,7 @@ void Handler::CacheFeed()
         root.append_copy( v.doc->first_child() );
     }
 
-    PrintDom( m_feed );
+    std::stringstream ss;
+    m_feed->save( ss );
+    m_feedString = ss.str();
 }

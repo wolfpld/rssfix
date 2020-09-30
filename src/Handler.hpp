@@ -65,6 +65,7 @@ private:
 
     std::string m_feedUrl, m_sourceUrl;
     std::unique_ptr<pugi::xml_document> m_feed;
+    std::string m_feedString;
 };
 
 #endif
