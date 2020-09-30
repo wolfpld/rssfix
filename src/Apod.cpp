@@ -111,6 +111,13 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
         cdiv.append_copy( srcIFrame.node() );
     }
 
+    auto expl = article->select_node( "/html/body/p[1]" );
+    for( auto& v : expl.node().select_nodes( "a/@href" ) )
+    {
+        FixupLink( v.attribute(), "https://apod.nasa.gov/apod/" );
+    }
+    cdiv.append_copy( expl.node() );
+
     auto srcTags = article->select_node( "/html/head/meta[@name='keywords']" );
     auto tptr = srcTags.node().attribute( "content" ).as_string();
     auto tend = tptr;
