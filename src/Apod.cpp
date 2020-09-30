@@ -22,7 +22,9 @@ bool Apod::InitializeImpl( ini_t* config )
 
 bool Apod::FirstFetchImpl()
 {
-    auto article = FetchDom( "https://apod.nasa.gov/apod/astropix.html" );
+    auto page = FetchPage( "https://apod.nasa.gov/apod/astropix.html" );
+    if( page.empty() ) return false;
+    auto article = FetchDom( page );
     if( !article ) return false;
 
     auto title = article->select_node( "/html/head/title" );
@@ -35,7 +37,7 @@ bool Apod::FirstFetchImpl()
     {
         auto next = article->select_node( "//a[text()='<']" );
         url = std::string( "https://apod.nasa.gov/apod/" ) + next.node().attribute( "href" ).as_string();
-        auto tmp = FetchDom( url.c_str() );
+        auto tmp = FetchDom( FetchPage( url.c_str() ) );
         if( !tmp ) return false;
         auto prev = tmp->select_node( "//a[text()='>']" );
         url = std::string( "https://apod.nasa.gov/apod/" ) + prev.node().attribute( "href" ).as_string();
@@ -64,7 +66,7 @@ bool Apod::FirstFetchImpl()
         if( ++num == 3 ) return true;
 
         url = std::string( "https://apod.nasa.gov/apod/" ) + next.node().attribute( "href" ).as_string();
-        article = FetchDom( url.c_str() );
+        article = FetchDom( FetchPage( url.c_str() ) );
         if( !article ) return true;
     }
 }

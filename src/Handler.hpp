@@ -33,7 +33,8 @@ protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
     virtual bool FirstFetchImpl() = 0;
 
-    std::unique_ptr<pugi::xml_document> FetchDom( const char* url, bool tidy = true );
+    std::vector<uint8_t> FetchPage( const char* url );
+    std::unique_ptr<pugi::xml_document> FetchDom( const std::vector<uint8_t>& page, bool tidy = true );
     void PrintDom( const std::unique_ptr<pugi::xml_document>& dom );
 
     void PrintStatus( bool status, const char* format, ... ) const;

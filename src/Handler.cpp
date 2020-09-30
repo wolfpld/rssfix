@@ -93,15 +93,21 @@ void Handler::PrintError( const char* context, const char* err, ... ) const
     }
 }
 
-std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url, bool tidy )
+std::vector<uint8_t> Handler::FetchPage( const char* url )
 {
     auto page = Curl::Get( m_curl, url );
     if( page.empty() )
     {
         PrintError( nullptr, "Cannot download %s", url );
-        return nullptr;
+        return page;
     }
     page.emplace_back( '\0' );
+    return page;
+}
+
+std::unique_ptr<pugi::xml_document> Handler::FetchDom( const std::vector<uint8_t>& page, bool tidy )
+{
+    if( page.empty() ) return nullptr;
 
     char* xhtml = nullptr;
     if( tidy )
@@ -109,7 +115,7 @@ std::unique_ptr<pugi::xml_document> Handler::FetchDom( const char* url, bool tid
         auto res = ParseHtml( (const char*)page.data(), xhtml );
         if( !res )
         {
-            PrintError( xhtml, "Cannot parse %s", url );
+            PrintError( xhtml, "Cannot parse web page" );
             free( xhtml );
             return nullptr;
         }
