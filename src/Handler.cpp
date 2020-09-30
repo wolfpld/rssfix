@@ -13,10 +13,11 @@
 #include "Curl.hpp"
 #include "Handler.hpp"
 
-Handler::Handler( const char* unit )
+Handler::Handler( const char* unit, const char* sourceUrl )
     : m_numArticles( 10 )
     , m_curl( curl_easy_init() )
     , m_unit( unit )
+    , m_sourceUrl( sourceUrl )
 {
 }
 
@@ -32,6 +33,9 @@ bool Handler::Initialize( ini_t* config )
         fprintf( stderr, BOLDRED "Failed to obtain CURL handle!" RESET "\n" );
         return false;
     }
+
+    m_feedUrl = std::string( ini_get( config, "global", "url" ) ) + "/apod";
+
     ini_sget( config, "global", "articles", "%d", &m_numArticles );
     return InitializeImpl( config );
 }

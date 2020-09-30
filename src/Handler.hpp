@@ -20,7 +20,7 @@ struct ArticleData
 class Handler
 {
 public:
-    Handler( const char* unit );
+    Handler( const char* unit, const char* sourceUrl );
     virtual ~Handler();
 
     bool Initialize( ini_t* config );
@@ -55,6 +55,8 @@ private:
 
     mutable std::mutex m_stdoutLock;
     const char* m_unit;
+
+    std::string m_feedUrl, m_sourceUrl;
 };
 
 #endif

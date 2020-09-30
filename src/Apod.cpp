@@ -6,7 +6,7 @@
 #include "../contrib/ini/ini.h"
 
 Apod::Apod()
-    : Handler( "APOD" )
+    : Handler( "APOD", "https://apod.nasa.gov/apod/astropix.html" )
 {
     m_icon = "https://apod.nasa.gov/favicon.ico";
 }
