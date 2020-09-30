@@ -29,6 +29,7 @@ public:
 
     const std::string& GetTitle() const { return m_title; }
     const std::string& GetDescription() const { return m_description; }
+    const std::string& GetFeedUrl() const { return m_feedUrl; }
 
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
