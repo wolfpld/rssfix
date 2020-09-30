@@ -7,6 +7,7 @@
 #include <pugixml.hpp>
 #include <string>
 #include <vector>
+#include <xxh3.h>
 
 struct ini_t;
 
@@ -34,6 +35,7 @@ protected:
     virtual bool FirstFetchImpl() = 0;
 
     std::vector<uint8_t> FetchPage( const char* url );
+    bool PageHashChanged( const std::vector<uint8_t>& page );
     std::unique_ptr<pugi::xml_document> FetchDom( const std::vector<uint8_t>& page, bool tidy = true );
     void PrintDom( const std::unique_ptr<pugi::xml_document>& dom );
 
@@ -55,6 +57,7 @@ private:
     void CacheFeed();
 
     CURL* m_curl;
+    XXH128_hash_t m_pageHash;
 
     mutable std::mutex m_stdoutLock;
     const char* m_unit;

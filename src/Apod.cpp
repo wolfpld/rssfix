@@ -23,7 +23,7 @@ bool Apod::InitializeImpl( ini_t* config )
 bool Apod::FirstFetchImpl()
 {
     auto page = FetchPage( "https://apod.nasa.gov/apod/astropix.html" );
-    if( page.empty() ) return false;
+    if( !PageHashChanged( page ) ) return true;
     auto article = FetchDom( page );
     if( !article ) return false;
 

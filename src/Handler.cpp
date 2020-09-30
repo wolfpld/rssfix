@@ -17,6 +17,7 @@
 Handler::Handler( const char* unit, const char* sourceUrl )
     : m_numArticles( 10 )
     , m_curl( curl_easy_init() )
+    , m_pageHash( {} )
     , m_unit( unit )
     , m_sourceUrl( sourceUrl )
 {
@@ -103,6 +104,14 @@ std::vector<uint8_t> Handler::FetchPage( const char* url )
     }
     page.emplace_back( '\0' );
     return page;
+}
+
+bool Handler::PageHashChanged( const std::vector<uint8_t>& page )
+{
+    const auto hash = XXH3_128bits( page.data(), page.size() );
+    if( memcmp( &hash, &m_pageHash, sizeof( hash ) ) == 0 ) return false;
+    m_pageHash = hash;
+    return true;
 }
 
 std::unique_ptr<pugi::xml_document> Handler::FetchDom( const std::vector<uint8_t>& page, bool tidy )
