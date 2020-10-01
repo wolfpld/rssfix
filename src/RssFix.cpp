@@ -18,6 +18,7 @@ void PrintHelp()
 int main( int argc, char** argv )
 {
     printf( BOLDYELLOW "RssFix %i.%i.%i" RESET "\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH );
+    fflush( stdout );
 
     const char* configFile = "../config.ini";
 
@@ -41,6 +42,7 @@ int main( int argc, char** argv )
     if( !config )
     {
         fprintf( stderr, BOLDRED "Unable to open config file %s!" RESET "\n", configFile );
+        fflush( stderr );
         return -3;
     }
 
@@ -48,6 +50,7 @@ int main( int argc, char** argv )
     if( !curl )
     {
         fprintf( stderr, BOLDRED "Unable to initialize libcurl!" RESET "\n" );
+        fflush( stderr );
         ini_free( config );
         return -1;
     }
@@ -56,6 +59,7 @@ int main( int argc, char** argv )
     if( !engine.Initialize( config ) )
     {
         fprintf( stderr, BOLDRED "RssFix initialization failed!" RESET "\n" );
+        fflush( stderr );
         ini_free( config );
         return -4;
     }

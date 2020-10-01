@@ -62,6 +62,7 @@ bool Engine::Initialize( ini_t* config )
     if( !url )
     {
         fprintf( stderr, BOLDRED "Feed URL must be set!" RESET "\n" );
+        fflush( stderr );
         return false;
     }
     TrySet( m_bind, config, "server", "bind" );
@@ -72,6 +73,7 @@ bool Engine::Initialize( ini_t* config )
     if( m_threads <= 0 )
     {
         fprintf( stderr, BOLDRED "Invalid number of threads!" RESET "\n" );
+        fflush( stderr );
         return false;
     }
 
@@ -80,12 +82,14 @@ bool Engine::Initialize( ini_t* config )
     if( m_handlers.empty() )
     {
         fprintf( stderr, BOLDRED "No feeds enabled in configuration!" RESET "\n" );
+        fflush( stderr );
         return false;
     }
 
     m_jobSystem = std::make_unique<JobSystem>( m_threads );
     printf( "Base address: %s\n", url );
     printf( "Populating feeds\n" );
+    fflush( stdout );
     for( auto& hnd : m_handlers )
     {
         std::function<void()> FetchFunc, PopulateFunc;
@@ -216,6 +220,7 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
             }
         }
         printf( CYAN "%s " GREEN "\"%.*s %.*s\" " YELLOW "%i " MAGENTA "%i " RED "\"%.*s\"" RESET "\n", remoteAddr, (int)hm->method.len, hm->method.p, (int)hm->uri.len, hm->uri.p, code, size, ua ? (int)ua->len : 0, ua ? ua->p : "" );
+        fflush( stdout );
     }
 }
 
@@ -230,15 +235,18 @@ void Engine::RunServer()
     if( !conn )
     {
         fprintf( stderr, BOLDRED "Cannot bind to %s!" RESET "\n", bind );
+        fflush( stderr );
         return;
     }
     mg_set_protocol_http_websocket( conn );
 
     printf( "Listening on %s...\n", bind );
+    fflush( stdout );
     while( !s_exit.load( std::memory_order_relaxed ) )
     {
         mg_mgr_poll( &mgr, 1000 );
     }
     printf( "Exiting...\n" );
+    fflush( stdout );
     mg_mgr_free( &mgr );
 }

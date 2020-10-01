@@ -36,6 +36,7 @@ bool Handler::Initialize( ini_t* config )
     if( !m_curl )
     {
         fprintf( stderr, BOLDRED "Failed to obtain CURL handle!" RESET "\n" );
+        fflush( stderr );
         return false;
     }
 
@@ -80,6 +81,7 @@ void Handler::PrintStatus( bool status, const char* format, ... ) const
 
     std::lock_guard lock( m_stdoutLock );
     printf( BOLDWHITE "  [%s" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " %s\n", status ? BOLDGREEN "✓" : BOLDRED "✗", m_unit, tmp );
+    fflush( stdout );
 }
 
 void Handler::PrintError( const char* context, const char* err, ... ) const
@@ -104,6 +106,7 @@ void Handler::PrintError( const char* context, const char* err, ... ) const
             printf( "%s\n", context );
         }
     }
+    fflush( stdout );
 }
 
 
@@ -227,6 +230,7 @@ void Handler::PrintDom( const std::unique_ptr<pugi::xml_document>& dom )
     dom->save( ss, "  " );
     printf( "%s\n", ss.str().c_str() );
     printf( CYAN "----------->8----- Debug DOM print ends here -------------------" RESET "\n" );
+    fflush( stdout );
 }
 
 bool Handler::ContainsArticle( const std::string& uid ) const
@@ -239,6 +243,7 @@ void Handler::AddArticle( ArticleData&& article )
 {
     assert( !ContainsArticle( article.uid ) );
     printf( BOLDWHITE "  [" BOLDBLUE "+" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " New article: %s\n", m_unit, article.uid.c_str() );
+    fflush( stdout );
     m_articles.emplace_back( std::move( article ) );
 }
 

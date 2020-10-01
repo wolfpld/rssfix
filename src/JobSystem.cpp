@@ -10,12 +10,14 @@ JobSystem::JobSystem( int threads )
 {
     assert( threads > 0 );
     printf( "Job system init with %i threads\n", threads );
+    fflush( stdout );
     for( int i=0; i<threads; i++ ) m_threadPool.emplace_back( std::thread( [this] { Worker(); } ) );
 }
 
 JobSystem::~JobSystem()
 {
     printf( "Job system shutdown\n" );
+    fflush( stdout );
     m_exit.store( true, std::memory_order_release );
     {
         std::lock_guard lock( m_jobLock );
@@ -23,6 +25,7 @@ JobSystem::~JobSystem()
     }
     for( auto& v : m_threadPool ) v.join();
     printf( "Job system shutdown done\n" );
+    fflush( stdout );
 }
 
 void JobSystem::Enqueue( int64_t runAt, std::function<void()> task )
