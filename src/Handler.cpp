@@ -17,6 +17,7 @@
 Handler::Handler( const char* unit, const char* sourceUrl )
     : m_numArticles( 10 )
     , m_refresh( 3600 )
+    , m_failureRefresh( 60 )
     , m_curl( curl_easy_init() )
     , m_pageHash( {} )
     , m_unit( unit )
@@ -43,6 +44,7 @@ bool Handler::Initialize( ini_t* config )
 
     ini_sget( config, "global", "articles", "%d", &m_numArticles );
     ini_sget( config, "global", "refresh", "%d", &m_refresh );
+    ini_sget( config, "global", "failure", "%d", &m_failureRefresh );
     return InitializeImpl( config );
 }
 

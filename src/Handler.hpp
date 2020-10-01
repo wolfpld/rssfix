@@ -36,6 +36,8 @@ public:
     size_t GetArticlesMax() const { return m_numArticles; }
     uint64_t GetTimestamp() const { return m_articles[0].timestamp; }
     const char* GetRefreshRate() const { return FormatTime( m_refresh ); }
+    int GetRefresh() const { return m_refresh; }
+    int GetFailureRefresh() const { return m_failureRefresh; }
 
     bool IsReady() const { return m_ready.load( std::memory_order_acquire ); }
     const std::string& GetFeed() const { return m_feedString; }
@@ -63,6 +65,7 @@ protected:
 
     int m_numArticles;
     int m_refresh;
+    int m_failureRefresh;
 
     std::string m_title, m_description;
     std::vector<ArticleData> m_articles;
