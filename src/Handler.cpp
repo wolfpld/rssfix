@@ -54,6 +54,7 @@ bool Handler::Fetch()
     if( status )
     {
         SortArticles();
+        TrimArticles();
         CacheFeed();
         PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
         m_ready.store( true, std::memory_order_release );
@@ -234,13 +235,17 @@ void Handler::AddArticle( ArticleData&& article )
 {
     assert( !ContainsArticle( article.uid ) );
     printf( BOLDWHITE "  [" BOLDBLUE "+" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " New article: %s\n", m_unit, article.uid.c_str() );
-    if( m_articles.size() == m_numArticles ) m_articles.pop_back();
     m_articles.emplace( m_articles.begin(), std::move( article ) );
 }
 
 void Handler::SortArticles()
 {
     std::sort( m_articles.begin(), m_articles.end(), []( const auto& l, const auto& r ) { return l.timestamp > r.timestamp; } );
+}
+
+void Handler::TrimArticles()
+{
+    if( m_articles.size() > m_numArticles ) m_articles.resize( m_numArticles );
 }
 
 void Handler::CacheFeed()

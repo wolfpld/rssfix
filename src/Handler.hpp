@@ -73,6 +73,7 @@ protected:
 private:
     bool ParseHtml( const char* data, char*& out );
     void SortArticles();
+    void TrimArticles();
     void CacheFeed();
 
     CURL* m_curl;
