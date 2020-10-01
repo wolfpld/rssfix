@@ -64,6 +64,7 @@ bool Engine::Initialize( ini_t* config )
         return false;
     }
 
+    printf( "Base address: %s\n", url );
     printf( "Starting initial fetch\n" );
     std::vector<std::thread> initJobs;
     std::vector<char> initStatus( m_handlers.size(), 0 );
@@ -84,7 +85,6 @@ bool Engine::Initialize( ini_t* config )
         }
     }
     printf( "Fetch done\n" );
-    printf( "Base address: %s\n", url );
 
     return true;
 }
