@@ -16,6 +16,7 @@ SRC := \
 	$(SD)/Curl.cpp \
 	$(SD)/Engine.cpp \
 	$(SD)/Handler.cpp \
+	$(SD)/JobSystem.cpp \
 	$(SD)/OpenSslThreading.cpp \
 	$(SD)/RssFix.cpp \
 	$(CD)/ini/ini.c \
