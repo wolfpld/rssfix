@@ -52,6 +52,12 @@ bool Handler::Initialize( ini_t* config )
 
 bool Handler::Fetch( bool first )
 {
+    if( !first )
+    {
+        std::lock_guard lock( m_stdoutLock );
+        printf( BOLDWHITE "  [" YELLOW "i" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " Feed refresh\n", m_unit );
+        fflush( stdout );
+    }
     const auto status = FetchImpl( first );
     if( status )
     {
