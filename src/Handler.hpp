@@ -26,7 +26,7 @@ public:
     virtual ~Handler();
 
     bool Initialize( ini_t* config );
-    bool FirstFetch();
+    bool Fetch();
 
     const std::string& GetTitle() const { return m_title; }
     const std::string& GetDescription() const { return m_description; }
@@ -42,7 +42,7 @@ public:
 
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
-    virtual bool FirstFetchImpl() = 0;
+    virtual bool FetchImpl() = 0;
 
     std::vector<uint8_t> FetchPage( const char* url );
     bool PageHashChanged( const std::vector<uint8_t>& page );

@@ -46,9 +46,9 @@ bool Handler::Initialize( ini_t* config )
     return InitializeImpl( config );
 }
 
-bool Handler::FirstFetch()
+bool Handler::Fetch()
 {
-    const auto status = FirstFetchImpl();
+    const auto status = FetchImpl();
     if( status )
     {
         SortArticles();

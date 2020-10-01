@@ -13,7 +13,7 @@ public:
 
 private:
     bool InitializeImpl( ini_t* config ) final;
-    bool FirstFetchImpl() final;
+    bool FetchImpl() final;
 
     void ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, const char* url, uint64_t timestamp );
 

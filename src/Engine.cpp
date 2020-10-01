@@ -84,27 +84,13 @@ bool Engine::Initialize( ini_t* config )
 
     m_jobSystem = std::make_unique<JobSystem>( m_threads );
     printf( "Base address: %s\n", url );
-    printf( "Starting initial fetch\n" );
-    std::vector<std::thread> initJobs;
-    std::vector<char> initStatus( m_handlers.size(), 0 );
-    initJobs.reserve( m_handlers.size() );
-    int idx = 0;
+    printf( "Populating feeds\n" );
     for( auto& hnd : m_handlers )
     {
-        initJobs.emplace_back( std::thread( [&hnd, &status = initStatus[idx]] { status = hnd->FirstFetch(); } ) );
-        idx++;
+        Enqueue( 0, [&hnd] {
+            hnd->Fetch();
+        } );
     }
-    for( auto& job : initJobs ) job.join();
-    for( auto& status : initStatus )
-    {
-        if( !status )
-        {
-            fprintf( stderr, BOLDRED "Initial fetch failed!" RESET "\n" );
-            return false;
-        }
-    }
-    printf( "Fetch done\n" );
-
     return true;
 }
 
