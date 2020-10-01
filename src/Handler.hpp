@@ -1,6 +1,7 @@
 #ifndef __HANDLER_HPP__
 #define __HANDLER_HPP__
 
+#include <atomic>
 #include <curl/curl.h>
 #include <memory>
 #include <mutex>
@@ -36,6 +37,7 @@ public:
     uint64_t GetTimestamp() const { return m_articles[0].timestamp; }
     const char* GetRefreshRate() const { return FormatTime( m_refresh ); }
 
+    bool IsReady() const { return m_ready.load( std::memory_order_acquire ); }
     const std::string& GetFeed() const { return m_feedString; }
 
 protected:
@@ -78,6 +80,8 @@ private:
 
     std::string m_feedUrl, m_feedUrlShort, m_sourceUrl;
     std::string m_feedString;
+
+    std::atomic<bool> m_ready;
 };
 
 #endif

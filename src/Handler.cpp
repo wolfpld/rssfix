@@ -21,6 +21,7 @@ Handler::Handler( const char* unit, const char* sourceUrl )
     , m_pageHash( {} )
     , m_unit( unit )
     , m_sourceUrl( sourceUrl )
+    , m_ready( false )
 {
 }
 
@@ -53,6 +54,7 @@ bool Handler::FirstFetch()
         SortArticles();
         CacheFeed();
         PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
+        m_ready.store( true, std::memory_order_release );
     }
     else
     {
