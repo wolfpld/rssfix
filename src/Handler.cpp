@@ -235,7 +235,7 @@ void Handler::AddArticle( ArticleData&& article )
 {
     assert( !ContainsArticle( article.uid ) );
     printf( BOLDWHITE "  [" BOLDBLUE "+" BOLDWHITE "] " BOLDMAGENTA "%s" RESET " New article: %s\n", m_unit, article.uid.c_str() );
-    m_articles.emplace( m_articles.begin(), std::move( article ) );
+    m_articles.emplace_back( std::move( article ) );
 }
 
 void Handler::SortArticles()
