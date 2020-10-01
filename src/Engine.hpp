@@ -19,6 +19,7 @@ public:
     void RunServer();
 
     const std::vector<std::unique_ptr<Handler>>& GetHandlers() const { return m_handlers; }
+    bool ShouldAdvertise() const { return m_advertise; }
 
 private:
     template<class T>
@@ -28,6 +29,7 @@ private:
 
     const char* m_bind;
     const char* m_port;
+    int m_advertise;
 };
 
 #endif

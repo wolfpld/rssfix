@@ -18,6 +18,7 @@ Engine* s_instance = nullptr;
 Engine::Engine()
     : m_bind( "127.0.0.1" )
     , m_port( "4001" )
+    , m_advertise( true )
 {
     assert( !s_instance );
     s_instance = this;
@@ -43,9 +44,9 @@ bool Engine::Initialize( ini_t* config )
         fprintf( stderr, BOLDRED "Feed URL must be set!" RESET "\n" );
         return false;
     }
-
     TrySet( m_bind, config, "server", "bind" );
     TrySet( m_port, config, "server", "port" );
+    ini_sget( config, "server", "advertise", "%d", &m_advertise );
 
     if( !AddHandler<Apod>( config, "apod" ) ) return false;
 
@@ -104,22 +105,30 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
         int code = 0, size = 0;
         if( uri == "/" )
         {
-            std::ostringstream resp;
-            resp << "<!doctype html>\n<html><head><meta charset=\"utf-8\"><title>RssFix</title></head><body><h1>RssFix " \
-                 << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_PATCH \
-                 << "</h1><h2>Available sources:</h2>";
-            for( auto& v : s_instance->GetHandlers() )
+            if( s_instance->ShouldAdvertise() )
             {
-                resp << "<p><b>" << v->GetTitle() << "</b></br>" \
-                     << "<a href=\"" << v->GetFeedUrl() << "\">" << v->GetFeedUrl() << "</a><br/>" \
-                     << v->GetDescription() << "</p>";
-            }
-            resp << "</body></html>";
+                std::ostringstream resp;
+                resp << "<!doctype html>\n<html><head><meta charset=\"utf-8\"><title>RssFix</title></head><body><h1>RssFix " \
+                    << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_PATCH \
+                    << "</h1><h2>Available sources:</h2>";
+                for( auto& v : s_instance->GetHandlers() )
+                {
+                    resp << "<p><b>" << v->GetTitle() << "</b></br>" \
+                        << "<a href=\"" << v->GetFeedUrl() << "\">" << v->GetFeedUrl() << "</a><br/>" \
+                        << v->GetDescription() << "</p>";
+                }
+                resp << "</body></html>";
 
-            code = 200;
-            size = (int)resp.str().size();
-            mg_send_head( nc, 200, size, "Content-Type: text/html" );
-            mg_printf( nc, "%.*s", size, resp.str().c_str() );
+                code = 200;
+                size = (int)resp.str().size();
+                mg_send_head( nc, 200, size, "Content-Type: text/html" );
+                mg_printf( nc, "%.*s", size, resp.str().c_str() );
+            }
+            else
+            {
+                code = 404;
+                mg_http_send_error( nc, 404, nullptr );
+            }
         }
         else
         {
