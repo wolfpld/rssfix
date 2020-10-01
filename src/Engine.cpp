@@ -19,6 +19,7 @@ Engine::Engine()
     : m_bind( "127.0.0.1" )
     , m_port( "4001" )
     , m_advertise( true )
+    , m_threads( 4 )
 {
     assert( !s_instance );
     s_instance = this;
@@ -47,6 +48,13 @@ bool Engine::Initialize( ini_t* config )
     TrySet( m_bind, config, "server", "bind" );
     TrySet( m_port, config, "server", "port" );
     ini_sget( config, "server", "advertise", "%d", &m_advertise );
+    ini_sget( config, "server", "threads", "%d", &m_threads );
+
+    if( m_threads <= 0 )
+    {
+        fprintf( stderr, BOLDRED "Invalid number of threads!" RESET "\n" );
+        return false;
+    }
 
     if( !AddHandler<Apod>( config, "apod" ) ) return false;
 

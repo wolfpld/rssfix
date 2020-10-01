@@ -30,6 +30,7 @@ private:
     const char* m_bind;
     const char* m_port;
     int m_advertise;
+    int m_threads;
 };
 
 #endif
