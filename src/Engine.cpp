@@ -113,9 +113,17 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
                     << "</h1><h2>Available sources:</h2>";
                 for( auto& v : s_instance->GetHandlers() )
                 {
+                    char tbuf[64];
+                    const auto ts = v->GetTimestamp();
+                    strftime( tbuf, 64, "%F %T %z", localtime( (time_t*)&ts ) );
+
                     resp << "<p><b>" << v->GetTitle() << "</b></br>" \
                         << "<a href=\"" << v->GetFeedUrl() << "\">" << v->GetFeedUrl() << "</a><br/>" \
-                        << v->GetDescription() << "</p>";
+                        << "<i>" << v->GetDescription() << "</i><br/>" \
+                        << "Messages: " << v->GetArticlesCount() << "/" << v->GetArticlesMax() << "<br/>" \
+                        << "Newest article at " << tbuf << "<br/>" \
+                        << "Article refresh every " << v->GetRefreshRate() \
+                        << "</p>";
                 }
                 resp << "</body></html>";
 

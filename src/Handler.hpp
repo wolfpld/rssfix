@@ -31,6 +31,10 @@ public:
     const std::string& GetDescription() const { return m_description; }
     const std::string& GetFeedUrl() const { return m_feedUrl; }
     const std::string& GetFeedUrlShort() const { return m_feedUrlShort; }
+    size_t GetArticlesCount() const { return m_articles.size(); }
+    size_t GetArticlesMax() const { return m_numArticles; }
+    uint64_t GetTimestamp() const { return m_articles[0].timestamp; }
+    const char* GetRefreshRate() const { return FormatTime( m_refresh ); }
 
     const std::string& GetFeed() const { return m_feedString; }
 
