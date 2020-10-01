@@ -271,12 +271,12 @@ void Handler::CacheFeed()
     root.append_child( "id" ).append_child( pugi::node_pcdata ).set_value( m_feedUrl.c_str() );
     root.append_child( "updated" ).append_child( pugi::node_pcdata ).set_value( tbuf );
 
-    auto self = root.append_child( "link" );
-    self.append_attribute( "type" ).set_value( "self" );
-    self.append_attribute( "href" ).set_value( m_feedUrl.c_str() );
     auto altr = root.append_child( "link" );
     altr.append_attribute( "type" ).set_value( "alternate" );
     altr.append_attribute( "href" ).set_value( m_sourceUrl.c_str() );
+    auto self = root.append_child( "link" );
+    self.append_attribute( "type" ).set_value( "self" );
+    self.append_attribute( "href" ).set_value( m_feedUrl.c_str() );
     if( !m_icon.empty() ) root.append_child( "icon" ).append_child( pugi::node_pcdata ).set_value( m_icon.c_str() );
 
     for( auto& v : m_articles )
