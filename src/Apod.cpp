@@ -23,7 +23,7 @@ bool Apod::InitializeImpl( ini_t* config )
     return status;
 }
 
-bool Apod::FetchImpl()
+bool Apod::FetchImpl( bool first )
 {
     auto page = FetchPage( "https://apod.nasa.gov/apod/astropix.html" );
     if( !PageHashChanged( page ) ) return true;
@@ -64,10 +64,14 @@ bool Apod::FetchImpl()
         {
             ProcessArticle( article, url.c_str(), timestamp );
         }
+        else if( !first )
+        {
+            return true;
+        }
 
         auto next = article->select_node( "//a[text()='<']" );
         if( !next ) return !m_articles.empty();
-        if( ++num == m_numArticles ) return true;
+        if( first && ++num == m_numArticles ) return true;
 
         url = m_baseUrl + next.node().attribute( "href" ).as_string();
         article = FetchDom( FetchPage( url.c_str() ) );

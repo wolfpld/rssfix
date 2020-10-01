@@ -1,5 +1,6 @@
 #include <atomic>
 #include <assert.h>
+#include <chrono>
 #include <signal.h>
 #include <sstream>
 #include <stdio.h>
@@ -87,9 +88,32 @@ bool Engine::Initialize( ini_t* config )
     printf( "Populating feeds\n" );
     for( auto& hnd : m_handlers )
     {
-        Enqueue( 0, [&hnd] {
-            hnd->Fetch();
-        } );
+        std::function<void()> FetchFunc, PopulateFunc;
+        FetchFunc = [&hnd, FetchFunc] {
+            const auto res = hnd->Fetch( false );
+            const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
+            if( res )
+            {
+                Engine::Instance()->Enqueue( ct + hnd->GetRefresh(), FetchFunc );
+            }
+            else
+            {
+                Engine::Instance()->Enqueue( ct + hnd->GetFailureRefresh(), FetchFunc );
+            }
+        };
+        PopulateFunc = [&hnd, FetchFunc, PopulateFunc] {
+            const auto res = hnd->Fetch( true );
+            const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
+            if( res )
+            {
+                Engine::Instance()->Enqueue( ct + hnd->GetRefresh(), FetchFunc );
+            }
+            else
+            {
+                Engine::Instance()->Enqueue( ct + hnd->GetFailureRefresh(), PopulateFunc );
+            }
+        };
+        Enqueue( 0, PopulateFunc );
     }
     return true;
 }

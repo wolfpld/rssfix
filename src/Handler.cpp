@@ -48,16 +48,19 @@ bool Handler::Initialize( ini_t* config )
     return InitializeImpl( config );
 }
 
-bool Handler::Fetch()
+bool Handler::Fetch( bool first )
 {
-    const auto status = FetchImpl();
+    const auto status = FetchImpl( first );
     if( status )
     {
         SortArticles();
         TrimArticles();
         CacheFeed();
-        PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
-        m_ready.store( true, std::memory_order_release );
+        if( first )
+        {
+            PrintStatus( true, "Fetch: %s (%i/%i articles)", GetTitle().c_str(), (int)m_articles.size(), m_numArticles );
+            m_ready.store( true, std::memory_order_release );
+        }
     }
     else
     {
