@@ -199,6 +199,7 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
                 {
                     if( v->IsReady() )
                     {
+                        std::lock_guard lock( *v );
                         auto& feed = v->GetFeed();
                         code = 200;
                         size = feed.size();

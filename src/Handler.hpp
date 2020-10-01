@@ -42,6 +42,9 @@ public:
     bool IsReady() const { return m_ready.load( std::memory_order_acquire ); }
     const std::string& GetFeed() const { return m_feedString; }
 
+    void lock() { m_feedLock.lock(); };
+    void unlock() { m_feedLock.unlock(); };
+
 protected:
     virtual bool InitializeImpl( ini_t* config ) = 0;
     virtual bool FetchImpl( bool first ) = 0;
@@ -84,6 +87,8 @@ private:
     const char* m_unit;
 
     std::string m_feedUrl, m_feedUrlShort, m_sourceUrl;
+
+    std::mutex m_feedLock;
     std::string m_feedString;
 
     std::atomic<bool> m_ready;

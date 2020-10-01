@@ -286,6 +286,7 @@ void Handler::CacheFeed()
 
     std::stringstream ss;
     feed->save( ss );
+    std::lock_guard lock( m_feedLock );
     m_feedString = ss.str();
 }
 
