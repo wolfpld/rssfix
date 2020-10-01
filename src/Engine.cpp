@@ -113,17 +113,29 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
                     << "</h1><h2>Available sources:</h2>";
                 for( auto& v : s_instance->GetHandlers() )
                 {
-                    char tbuf[64];
-                    const auto ts = v->GetTimestamp();
-                    strftime( tbuf, 64, "%F %T %z", localtime( (time_t*)&ts ) );
+                    if( v->IsReady() )
+                    {
+                        char tbuf[64];
+                        const auto ts = v->GetTimestamp();
+                        strftime( tbuf, 64, "%F %T %z", localtime( (time_t*)&ts ) );
 
-                    resp << "<p><b>" << v->GetTitle() << "</b></br>" \
-                        << "<a href=\"" << v->GetFeedUrl() << "\">" << v->GetFeedUrl() << "</a><br/>" \
-                        << "<i>" << v->GetDescription() << "</i><br/>" \
-                        << "Messages: " << v->GetArticlesCount() << "/" << v->GetArticlesMax() << "<br/>" \
-                        << "Newest article at " << tbuf << "<br/>" \
-                        << "Article refresh every " << v->GetRefreshRate() \
-                        << "</p>";
+                        resp << "<p><b>" << v->GetTitle() << "</b></br>" \
+                            << "<a href=\"" << v->GetFeedUrl() << "\">" << v->GetFeedUrl() << "</a><br/>" \
+                            << "<i>" << v->GetDescription() << "</i><br/>" \
+                            << "Messages: " << v->GetArticlesCount() << "/" << v->GetArticlesMax() << "<br/>" \
+                            << "Newest article at " << tbuf << "<br/>" \
+                            << "Article refresh every " << v->GetRefreshRate() \
+                            << "</p>";
+                    }
+                    else
+                    {
+                        resp << "<p><b>" << v->GetTitle() << "</b></br>" \
+                            << "Feed is still initializing...<br/>" \
+                            << "<i>" << v->GetDescription() << "</i><br/>" \
+                            << "Messages: 0/" << v->GetArticlesMax() << "<br/>" \
+                            << "Article refresh every " << v->GetRefreshRate() \
+                            << "</p>";
+                    }
                 }
                 resp << "</body></html>";
 
@@ -144,11 +156,19 @@ static void ConnectionHandler( struct mg_connection* nc, int ev, void* data )
             {
                 if( uri == v->GetFeedUrlShort() )
                 {
-                    auto& feed = v->GetFeed();
-                    code = 200;
-                    size = feed.size();
-                    mg_send_head( nc, 200, size, "Content-Type: text/xml" );
-                    mg_printf( nc, "%.*s", size, feed.c_str() );
+                    if( v->IsReady() )
+                    {
+                        auto& feed = v->GetFeed();
+                        code = 200;
+                        size = feed.size();
+                        mg_send_head( nc, 200, size, "Content-Type: text/xml" );
+                        mg_printf( nc, "%.*s", size, feed.c_str() );
+                    }
+                    else
+                    {
+                        code = 503;
+                        mg_http_send_error( nc, 503, nullptr );
+                    }
                     break;
                 }
             }
