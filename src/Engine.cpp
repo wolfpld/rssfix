@@ -1,4 +1,6 @@
+#include <atomic>
 #include <assert.h>
+#include <signal.h>
 #include <sstream>
 #include <stdio.h>
 #include <string>
@@ -13,6 +15,13 @@
 #include "Version.hpp"
 
 Engine* s_instance = nullptr;
+std::atomic<bool> s_exit( false );
+
+void signalHandler( int signum )
+{
+    assert( signum == SIGINT || signum == SIGTERM );
+    s_exit.store( true, std::memory_order_relaxed );
+}
 
 
 Engine::Engine()
@@ -23,6 +32,9 @@ Engine::Engine()
 {
     assert( !s_instance );
     s_instance = this;
+
+    signal( SIGINT, signalHandler );
+    signal( SIGTERM, signalHandler );
 }
 
 Engine::~Engine()
@@ -207,6 +219,10 @@ void Engine::RunServer()
     mg_set_protocol_http_websocket( conn );
 
     printf( "Listening on %s...\n", bind );
-    for(;;) mg_mgr_poll( &mgr, 1000 );
+    while( !s_exit.load( std::memory_order_relaxed ) )
+    {
+        mg_mgr_poll( &mgr, 1000 );
+    }
+    printf( "Exiting...\n" );
     mg_mgr_free( &mgr );
 }
