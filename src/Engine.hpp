@@ -16,6 +16,8 @@ public:
     Engine();
     ~Engine();
 
+    static Engine* Instance();
+
     bool Initialize( ini_t* config );
     void RunServer();
 

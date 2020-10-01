@@ -43,6 +43,12 @@ Engine::~Engine()
     s_instance = nullptr;
 }
 
+Engine* Engine::Instance()
+{
+    assert( s_instance );
+    return s_instance;
+}
+
 static void TrySet( const char*& value, ini_t* config, const char* section, const char* key )
 {
     auto tmp = ini_get( config, section, key );
