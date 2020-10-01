@@ -64,6 +64,7 @@ bool Engine::Initialize( ini_t* config )
         return false;
     }
 
+    m_jobSystem = std::make_unique<JobSystem>( m_threads );
     printf( "Base address: %s\n", url );
     printf( "Starting initial fetch\n" );
     std::vector<std::thread> initJobs;

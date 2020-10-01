@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Handler.hpp"
+#include "JobSystem.hpp"
 
 struct ini_t;
 struct mg_connection;
@@ -25,6 +26,7 @@ private:
     template<class T>
     bool AddHandler( ini_t* config, const char* name );
 
+    std::unique_ptr<JobSystem> m_jobSystem;
     std::vector<std::unique_ptr<Handler>> m_handlers;
 
     const char* m_bind;
