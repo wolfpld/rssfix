@@ -63,6 +63,7 @@ protected:
 
     std::string m_icon;
 
+    int m_initialArticles;
     int m_numArticles;
     int m_refresh;
     int m_failureRefresh;

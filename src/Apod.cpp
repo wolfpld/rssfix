@@ -14,12 +14,13 @@ Apod::Apod()
 
 bool Apod::InitializeImpl( ini_t* config )
 {
+    ini_sget( config, "apod", "initial", "%d", &m_initialArticles );
     ini_sget( config, "apod", "articles", "%d", &m_numArticles );
     ini_sget( config, "apod", "refresh", "%d", &m_refresh );
     ini_sget( config, "apod", "failure", "%d", &m_failureRefresh );
 
-    const bool status = m_numArticles > 0;
-    PrintStatus( status, "Initialization: configured for %i articles, refresh: %s", m_numArticles, FormatTime( m_refresh ) );
+    const bool status = m_numArticles > 0 && m_initialArticles > 0;
+    PrintStatus( status, "Initialization: configured for %i articles (%i initial), refresh: %s", m_numArticles, m_initialArticles, FormatTime( m_refresh ) );
     return status;
 }
 
@@ -71,7 +72,7 @@ bool Apod::FetchImpl( bool first )
 
         auto next = article->select_node( "//a[text()='<']" );
         if( !next ) return !m_articles.empty();
-        if( first && ++num == m_numArticles ) return true;
+        if( first && ++num == m_initialArticles ) return true;
 
         url = m_baseUrl + next.node().attribute( "href" ).as_string();
         article = FetchDom( FetchPage( url.c_str() ) );
