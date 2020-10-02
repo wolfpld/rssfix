@@ -46,7 +46,7 @@ void JobSystem::Worker()
         const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
         if( !m_jobQueue.empty() )
         {
-            if( m_jobQueue.front().runAt < ct )
+            if( m_jobQueue.front().runAt <= ct )
             {
                 shouldWait = false;
                 auto job = std::move( m_jobQueue.front() );
