@@ -40,6 +40,8 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+    m_jobSystem.reset();
+
     assert( s_instance );
     s_instance = nullptr;
 }
