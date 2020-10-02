@@ -256,3 +256,11 @@ void Engine::RunServer()
     fflush( stdout );
     mg_mgr_free( &mgr );
 }
+
+void Engine::Enqueue( int64_t runAt, void(*task)(Handler*), Handler* hnd )
+{
+    if( m_jobSystem )
+    {
+        m_jobSystem->Enqueue( runAt, task, hnd );
+    }
+}
