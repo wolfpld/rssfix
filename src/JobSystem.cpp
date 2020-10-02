@@ -28,10 +28,10 @@ JobSystem::~JobSystem()
     fflush( stdout );
 }
 
-void JobSystem::Enqueue( int64_t runAt, std::function<void()> task )
+void JobSystem::Enqueue( int64_t runAt, void(*task)(Handler*), Handler* hnd )
 {
     std::lock_guard lock( m_jobLock );
-    m_jobQueue.emplace_back( JobQueue { runAt, task } );
+    m_jobQueue.emplace_back( JobQueue { runAt, task, hnd } );
     std::push_heap( m_jobQueue.begin(), m_jobQueue.end(), [] ( const auto& l, const auto& r ) { return l.runAt > r.runAt; } );
     m_jobCv.notify_all();
 }
@@ -53,7 +53,7 @@ void JobSystem::Worker()
                 pop_heap( m_jobQueue.begin(), m_jobQueue.end(), [] ( const auto& l, const auto& r ) { return l.runAt > r.runAt; } );
                 m_jobQueue.pop_back();
                 lock.unlock();
-                job.task();
+                job.task( job.hnd );
                 lock.lock();
                 if( m_exit.load( std::memory_order_acquire ) ) return;
             }

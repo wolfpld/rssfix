@@ -25,7 +25,7 @@ public:
     const std::vector<std::unique_ptr<Handler>>& GetHandlers() const { return m_handlers; }
     bool ShouldAdvertise() const { return m_advertise; }
 
-    void Enqueue( int64_t runAt, std::function<void()> task ) { m_jobSystem->Enqueue( runAt, task ); }
+    void Enqueue( int64_t runAt, void(*task)(Handler*), Handler* hnd ) { m_jobSystem->Enqueue( runAt, task, hnd ); }
 
 private:
     template<class T>

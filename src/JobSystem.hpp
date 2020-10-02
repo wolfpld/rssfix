@@ -8,19 +8,22 @@
 #include <thread>
 #include <vector>
 
+class Handler;
+
 class JobSystem
 {
     struct JobQueue
     {
         int64_t runAt;
-        std::function<void()> task;
+        void(*task)(Handler*);
+        Handler* hnd;
     };
 
 public:
     JobSystem( int threads );
     ~JobSystem();
 
-    void Enqueue( int64_t runAt, std::function<void()> task );
+    void Enqueue( int64_t runAt, void(*task)(Handler*), Handler* hnd );
 
 private:
     void Worker();

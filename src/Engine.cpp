@@ -56,6 +56,34 @@ static void TrySet( const char*& value, ini_t* config, const char* section, cons
     if( tmp ) value = tmp;
 }
 
+static void FetchFunc( Handler* hnd )
+{
+    const auto res = hnd->Fetch( false );
+    const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
+    if( res )
+    {
+        Engine::Instance()->Enqueue( ct + hnd->GetRefresh(), FetchFunc, hnd );
+    }
+    else
+    {
+        Engine::Instance()->Enqueue( ct + hnd->GetFailureRefresh(), FetchFunc, hnd );
+    }
+}
+
+static void PopulateFunc( Handler* hnd )
+{
+    const auto res = hnd->Fetch( true );
+    const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
+    if( res )
+    {
+        Engine::Instance()->Enqueue( ct + hnd->GetRefresh(), FetchFunc, hnd );
+    }
+    else
+    {
+        Engine::Instance()->Enqueue( ct + hnd->GetFailureRefresh(), PopulateFunc, hnd );
+    }
+}
+
 bool Engine::Initialize( ini_t* config )
 {
     auto url = ini_get( config, "server", "url" );
@@ -92,32 +120,7 @@ bool Engine::Initialize( ini_t* config )
     fflush( stdout );
     for( auto& hnd : m_handlers )
     {
-        std::function<void()> FetchFunc, PopulateFunc;
-        FetchFunc = [&hnd, FetchFunc] {
-            const auto res = hnd->Fetch( false );
-            const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
-            if( res )
-            {
-                Engine::Instance()->Enqueue( ct + hnd->GetRefresh(), FetchFunc );
-            }
-            else
-            {
-                Engine::Instance()->Enqueue( ct + hnd->GetFailureRefresh(), FetchFunc );
-            }
-        };
-        PopulateFunc = [&hnd, FetchFunc, PopulateFunc] {
-            const auto res = hnd->Fetch( true );
-            const auto ct = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
-            if( res )
-            {
-                Engine::Instance()->Enqueue( ct + hnd->GetRefresh(), FetchFunc );
-            }
-            else
-            {
-                Engine::Instance()->Enqueue( ct + hnd->GetFailureRefresh(), PopulateFunc );
-            }
-        };
-        Enqueue( 0, PopulateFunc );
+        Enqueue( 0, PopulateFunc, hnd.get() );
     }
     return true;
 }
