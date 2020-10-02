@@ -31,11 +31,14 @@ bool Apod::FetchImpl( bool first )
     auto article = FetchDom( page );
     if( !article ) return false;
 
-    auto title = article->select_node( "/html/head/title" );
-    m_title = title ? title.node().text().as_string() : "APOD";
+    if( first )
+    {
+        auto title = article->select_node( "/html/head/title" );
+        m_title = title ? title.node().text().as_string() : "APOD";
 
-    auto desc = article->select_node( "/html/head/meta[@name='description']" );
-    m_description = desc ? desc.node().attribute( "content" ).as_string() : "";
+        auto desc = article->select_node( "/html/head/meta[@name='description']" );
+        m_description = desc ? desc.node().attribute( "content" ).as_string() : "";
+    }
 
     std::string url;
     {
