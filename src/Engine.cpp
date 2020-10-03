@@ -116,6 +116,12 @@ bool Engine::Initialize( ini_t* config )
         return false;
     }
 
+    if( (int)m_handlers.size() < m_threads )
+    {
+        m_threads = (int)m_handlers.size();
+        printf( "Requested more threads than feeds, limiting to %i\n", m_threads );
+    }
+
     m_jobSystem = std::make_unique<JobSystem>( m_threads );
     printf( "Base address: %s\n", url );
     printf( "Populating feeds\n" );
