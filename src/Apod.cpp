@@ -43,10 +43,12 @@ bool Apod::FetchImpl( bool first )
     std::string url;
     {
         auto next = article->select_node( "//a[text()='<']" );
+        if( !next ) return false;
         url = m_baseUrl + next.node().attribute( "href" ).as_string();
         auto tmp = FetchDom( FetchPage( url.c_str() ) );
         if( !tmp ) return false;
         auto prev = tmp->select_node( "//a[text()='>']" );
+        if( !prev ) return false;
         url = m_baseUrl + prev.node().attribute( "href" ).as_string();
     }
 
@@ -66,7 +68,11 @@ bool Apod::FetchImpl( bool first )
 
         if( !ContainsArticle( url ) )
         {
-            ProcessArticle( article, url.c_str(), timestamp );
+            if( !ProcessArticle( article, url.c_str(), timestamp ) )
+            {
+                PrintError( nullptr, "Encountered problems when processing article %s", url.c_str() );
+                return true;
+            }
         }
         else if( !first )
         {
@@ -83,12 +89,13 @@ bool Apod::FetchImpl( bool first )
     }
 }
 
-void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, const char* url, uint64_t timestamp )
+bool Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, const char* url, uint64_t timestamp )
 {
     char tbuf[64];
     strftime( tbuf, 64, "%FT%TZ", gmtime( (time_t*)&timestamp ) );
 
     auto srcTitle = article->select_node( "/html/body/center[2]/b[1]" );
+    if( !srcTitle ) return false;
 
     auto doc = std::make_unique<pugi::xml_document>();
     auto root = doc->append_child( "entry" );
@@ -127,10 +134,12 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
     else
     {
         auto srcIFrame = article->select_node( "/html/body/center[1]/p[2]/iframe" );
+        if( !srcIFrame ) return false;
         cdiv.append_copy( srcIFrame.node() );
     }
 
     auto expl = article->select_node( "/html/body/p[1]" );
+    if( !expl ) return false;
     for( auto& v : expl.node().select_nodes( "a/@href" ) )
     {
         FixupLink( v.attribute(), m_baseUrl.c_str() );
@@ -138,17 +147,21 @@ void Apod::ProcessArticle( const std::unique_ptr<pugi::xml_document>& article, c
     cdiv.append_copy( expl.node() );
 
     auto srcTags = article->select_node( "/html/head/meta[@name='keywords']" );
-    auto tptr = srcTags.node().attribute( "content" ).as_string();
-    auto tend = tptr;
-    for(;;)
+    if( srcTags )
     {
-        while( *tend != '\0' && *tend != ',' ) tend++;
-        if( tend == tptr ) break;
-        std::string tmp( tptr, tend );
-        root.append_child( "category" ).append_attribute( "term" ).set_value( tmp.c_str() );
-        while( *tend != '\0' && ( *tend == ',' || *tend == ' ' ) ) tend++;
-        tptr = tend;
+        auto tptr = srcTags.node().attribute( "content" ).as_string();
+        auto tend = tptr;
+        for(;;)
+        {
+            while( *tend != '\0' && *tend != ',' ) tend++;
+            if( tend == tptr ) break;
+            std::string tmp( tptr, tend );
+            root.append_child( "category" ).append_attribute( "term" ).set_value( tmp.c_str() );
+            while( *tend != '\0' && ( *tend == ',' || *tend == ' ' ) ) tend++;
+            tptr = tend;
+        }
     }
 
     AddArticle( ArticleData { timestamp, std::move( doc ), std::string( url ) } );
+    return true;
 }
