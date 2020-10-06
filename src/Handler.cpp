@@ -223,6 +223,13 @@ bool Handler::ParseHtml( const char* data, char*& out )
 
     out = strdup( (const char*)buf.bp );
 
+    auto ptr = out;
+    while( *ptr )
+    {
+        if( *ptr == '\n' ) *ptr = ' ';
+        ptr++;
+    }
+
     tidyBufFree( &buf );
     tidyBufFree( &err );
     tidyRelease( td );
