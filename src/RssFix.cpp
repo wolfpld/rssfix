@@ -34,6 +34,7 @@ int main( int argc, char** argv )
             configFile = optarg;
             break;
         default:
+            PrintHelp();
             return -2;
         }
     }
