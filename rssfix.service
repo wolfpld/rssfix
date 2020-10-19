@@ -1,0 +1,12 @@
+[Unit]
+Description=RssFix
+After=network.target
+
+[Service]
+User=rssfix
+Group=rssfix
+ExecStart=/srv/rssfix/rssfix-release -c config.ini
+WorkingDirectory=/srv/rssfix
+
+[Install]
+WantedBy=multi-user.target
