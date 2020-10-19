@@ -267,7 +267,7 @@ void Handler::SortArticles()
 
 void Handler::TrimArticles()
 {
-    if( m_articles.size() > m_numArticles ) m_articles.resize( m_numArticles );
+    if( (int)m_articles.size() > m_numArticles ) m_articles.resize( m_numArticles );
 }
 
 void Handler::CacheFeed()
